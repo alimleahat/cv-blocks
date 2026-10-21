@@ -127,7 +127,7 @@ body.drag-from-cv .remove-zone.show{opacity:1}
 /* ---------- stage ---------- */
 #main{position:relative;overflow:hidden;grid-column:1/-1;grid-row:1/-1;z-index:0}
 #library{grid-column:1;grid-row:2}
-#stage{position:absolute;inset:0;overflow:auto;padding:92px 64px 120px 382px;transition:padding .34s var(--ease)}
+#stage{position:absolute;inset:0;overflow:auto;padding:128px 64px 120px 382px;transition:padding .34s var(--ease)}
 #main.editor-open #stage{padding-right:410px}
 #pageWrap{margin:0 auto;position:relative}
 #page{position:relative;transform-origin:0 0;width:210mm;min-height:297mm;padding:28pt 36pt 26pt;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.05),0 34px 80px rgba(0,0,0,.13);border-radius:3px;transition:box-shadow .2s}
@@ -136,6 +136,24 @@ body.drag-from-cv .remove-zone.show{opacity:1}
 .page-break{position:absolute;left:-14px;right:-14px;height:0;border-top:1.5px dashed #ff9f0a;pointer-events:none}
 .page-break span{position:absolute;right:0;top:-24px;font:600 10.5px -apple-system,sans-serif;color:#1d1d1f;background:rgba(255,255,255,.8);box-shadow:0 0 0 .5px rgba(0,0,0,.1);padding:3px 9px;border-radius:999px}
 
+/* ---------- version tabs ---------- */
+.tabs{position:absolute;top:70px;left:calc(318px + (100% - 318px)/2);transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;z-index:12;max-width:calc(100% - 360px);overflow-x:auto;scrollbar-width:none;transition:left .34s var(--ease)}
+#main.editor-open .tabs{left:calc(318px + (100% - 318px - 400px)/2);max-width:calc(100% - 760px)}
+.tab{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 6px 0 14px;border:0;border-radius:999px;background:transparent;font-weight:560;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s,transform .14s var(--spring);user-select:none}
+.tab:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+.tab:active{transform:scale(.95)}
+.tab.active{background:#fff;color:var(--ink);box-shadow:0 0 0 .5px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.08)}
+.tab-x{width:18px;height:18px;border-radius:999px;display:grid;place-items:center;font-size:13px;line-height:1;color:var(--faint);opacity:0;transition:opacity .15s,background .15s}
+.tab:hover .tab-x,.tab.active .tab-x{opacity:1}
+.tab-x:hover{background:rgba(0,0,0,.08);color:var(--ink)}
+.tabs.single .tab-x{display:none}
+.tabs.single .tab{padding-right:14px}
+.tab input{width:120px;height:22px;padding:0 8px;font-size:12.5px;border-radius:999px}
+.tab-add{width:30px;height:30px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:17px;cursor:pointer;flex:none;transition:background .15s,transform .14s var(--spring)}
+.tab-add:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+.tab-add:active{transform:scale(.88)}
+.tab.pop{animation:tabpop .4s var(--spring)}
+@keyframes tabpop{0%{transform:scale(.7);opacity:0}100%{transform:none;opacity:1}}
 .fit-pill{position:absolute;left:calc(318px + (100% - 318px)/2);bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:9px;border-radius:999px;padding:9px 16px 9px 14px;font-weight:600;font-size:12px;z-index:10;transition:left .34s var(--ease);white-space:nowrap}
 #main.editor-open .fit-pill{left:calc(318px + (100% - 318px - 400px)/2)}
 .fit-pill .ind{width:8px;height:8px;border-radius:50%;font-size:0}
@@ -291,8 +309,6 @@ input:focus,textarea:focus,select:focus{background:#fff;box-shadow:inset 0 0 0 1
       <button class="btn icon" data-act="redo" id="redoBtn" title="Redo (⇧⌘Z)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
     </div>
     <div class="tgroup glass">
-      <button class="btn" data-act="versions" id="verBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Versions</button>
-      <span class="tsep"></span>
       <div class="switch" data-act="autofit" id="fitSwitch" title="Automatically adjust spacing and size to fit one page"><span class="track"></span>Auto-fit</div>
     </div>
     <div class="tgroup glass">
@@ -304,7 +320,6 @@ input:focus,textarea:focus,select:focus{background:#fff;box-shadow:inset 0 0 0 1
       <button class="btn icon" data-act="more" id="moreBtn" title="More">⋯</button>
     </div>
     <button class="btn primary" data-act="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Export PDF</button>
-    <div class="popover glass" id="verPop"></div>
     <div class="popover glass" id="morePop">
       <div class="pop-title">Data</div>
       <button class="pop-item" data-act="backup">Download backup (.json)</button>
@@ -325,6 +340,7 @@ input:focus,textarea:focus,select:focus{background:#fff;box-shadow:inset 0 0 0 1
     <div id="stage">
       <div id="pageWrap"><div id="page" class="cv"><div class="cv-inner"></div><div class="breaks"></div></div></div>
     </div>
+    <div class="tabs glass" id="tabs"></div>
     <div class="fit-pill glass ok" id="fitPill"><span class="ind">✓</span><span id="fitText">Fits on one page</span></div>
     <aside id="editor" class="glass"></aside>
   </main>
@@ -439,9 +455,9 @@ function removeItemFromCV(id){ state.cv.forEach(s=>s.items=s.items.filter(x=>x!=
 
 /* ================= history & persistence ================= */
 const hist = {past:[],future:[]};
-const snap = ()=>JSON.stringify({header:state.header,sections:state.sections,items:state.items,libOrder:state.libOrder,cv:state.cv});
+const snap = ()=>{ syncTab(); return JSON.stringify({header:state.header,sections:state.sections,items:state.items,libOrder:state.libOrder,tabs:state.tabs,activeTab:state.activeTab}); };
 function pushHistory(){ hist.past.push(snap()); if(hist.past.length>100) hist.past.shift(); hist.future=[]; updateUndo(); }
-function restoreSnap(j){ Object.assign(state, JSON.parse(j)); }
+function restoreSnap(j){ Object.assign(state, JSON.parse(j)); state.cv = activeTab().cv; }
 function undo(){ if(!hist.past.length) return; hist.future.push(snap()); restoreSnap(hist.past.pop()); afterHistory(); }
 function redo(){ if(!hist.future.length) return; hist.past.push(snap()); restoreSnap(hist.future.pop()); afterHistory(); }
 function afterHistory(){ if(ui.editing && !editingExists()) closeEditor(); else if(ui.editing) buildEditor(); renderAll(true); sfx.click(); updateUndo(); }
@@ -450,7 +466,7 @@ let saveT;
 function save(){
   $('#saveState').textContent='Saving…';
   clearTimeout(saveT);
-  saveT=setTimeout(()=>{ try{ localStorage.setItem(STORE,JSON.stringify(state)); $('#saveState').textContent='Saved'; }catch(e){ $('#saveState').textContent='Not saved — use backup'; } },250);
+  saveT=setTimeout(()=>{ try{ syncTab(); localStorage.setItem(STORE,JSON.stringify(state)); $('#saveState').textContent='Saved'; }catch(e){ $('#saveState').textContent='Not saved — use backup'; } },250);
 }
 
 /* ================= sound ================= */
@@ -622,10 +638,58 @@ function renderLibrary(){
   $('#libCount').textContent = `${placed} of ${total} on CV`;
 }
 
+/* ================= version tabs =================
+   The library (blocks) is shared. Each tab is a live layout: which blocks are
+   on the page and in what order. state.cv always points at the active tab's layout. */
+function activeTab(){ return state.tabs.find(t=>t.id===state.activeTab) || state.tabs[0]; }
+function syncTab(){ const t = state.tabs && activeTab(); if (t) t.cv = state.cv; }
+function migrateTabs(){
+  if (!Array.isArray(state.tabs) || !state.tabs.length){
+    // Older saves kept frozen "versions"; each becomes a live tab.
+    state.tabs = [{id:uid(), name:'Main', cv:state.cv||[]}];
+    for (const [name,v] of Object.entries(state.versions||{})) state.tabs.push({id:uid(), name, cv:v.cv||[]});
+    state.activeTab = state.tabs[0].id;
+  }
+  delete state.versions;
+  const t = activeTab(); state.activeTab = t.id; state.cv = t.cv;
+}
+// Drop sections and blocks that no longer exist in the library from every tab.
+function pruneTabs(){
+  syncTab();
+  for (const t of state.tabs) t.cv = t.cv.filter(s=>secById(s.sec)).map(s=>({sec:s.sec, items:s.items.filter(id=>state.items[id])}));
+  state.cv = activeTab().cv;
+}
+function renderTabs(){
+  const el = $('#tabs');
+  el.classList.toggle('single', state.tabs.length===1);
+  el.innerHTML = state.tabs.map(t=>`<button class="tab${t.id===state.activeTab?' active':''}" data-act="tab-switch" data-id="${t.id}" title="Double-click to rename"><span class="tab-name">${esc(t.name)}</span><span class="tab-x" data-act="tab-close" data-id="${t.id}" title="Close this version">×</span></button>`).join('')
+    + `<button class="tab-add" data-act="tab-new" title="New version (starts as a copy of this one)">+</button>`;
+}
+function renameTab(id){
+  const btn = $(`#tabs .tab[data-id="${id}"]`), t = state.tabs.find(x=>x.id===id); if(!btn||!t) return;
+  const name = btn.querySelector('.tab-name');
+  const inp = document.createElement('input'); inp.type='text'; inp.value=t.name;
+  name.replaceWith(inp); inp.focus(); inp.select();
+  let done = false;
+  const finish = ok=>{ if(done) return; done = true; if(ok && inp.value.trim()){ t.name = inp.value.trim(); save(); } renderTabs(); };
+  inp.addEventListener('keydown', e=>{ e.stopPropagation(); if(e.key==='Enter') finish(true); if(e.key==='Escape') finish(false); });
+  inp.addEventListener('blur', ()=>finish(true));
+  inp.addEventListener('click', e=>e.stopPropagation());
+}
+function switchTab(id){
+  if (id===state.activeTab) return;
+  syncTab();
+  state.activeTab = id; state.cv = activeTab().cv;
+  if (ui.editing) buildEditor();
+  renderAll(true); sfx.snap();
+}
+
 function renderAll(animate=true){
+  pruneTabs();
   const m = ()=>{ renderCV(); fit(); };
   animate ? flip(m) : m();
   renderLibrary();
+  renderTabs();
   save();
 }
 function pulse(key){
@@ -917,7 +981,7 @@ function buildEditor(){
         + fld('link','Link',it.link,{ph:'https://github.com/…',hint:'adds 🔗 icon'})
         + fld('tech','Tech / tools',it.tech,{ph:'Python, React, Docker',hint:'next to the title for projects'})
         + `<div class="fld"><label>Detail line <em>optional</em></label><div class="row2"><input type="text" data-f="detailLabel" value="${esc(it.detailLabel)}" placeholder="Classes:"><textarea data-f="detail" rows="2" placeholder="Course A, Course B…">${esc(it.detail)}</textarea></div></div>`
-        + `<span class="ed-label">Bullet points <em style="font-style:normal;color:var(--faint);font-weight:500">— untick to hide for this version</em></span><div class="b-list">`
+        + `<span class="ed-label">Bullet points <em style="font-style:normal;color:var(--faint);font-weight:500">— untick to hide without deleting (applies in every version)</em></span><div class="b-list">`
         + (it.bullets||[]).map((b,i)=>`<div class="b-row${b.on?'':' off'}"><input type="checkbox" class="chk" data-bv="${i}"${b.on?' checked':''}><textarea data-b="${i}" rows="2" placeholder="Achievement, with a number if you can…">${esc(b.t)}</textarea><div class="b-tools"><button class="mini" data-act="b-up" data-i="${i}" title="Move up">▲</button><button class="mini" data-act="b-down" data-i="${i}" title="Move down">▼</button><button class="mini" data-act="b-del" data-i="${i}" title="Delete">×</button></div></div>`).join('')
         + `</div><button class="addline" data-act="b-add">+ Add bullet</button>`;
     }
@@ -1028,25 +1092,32 @@ const act = {
   'ct-add': ()=>{ pushHistory(); state.header.contacts.push({t:'',u:''}); buildEditor(); live(); sfx.pop(); },
   'ct-del': el=>{ pushHistory(); state.header.contacts.splice(+el.dataset.i,1); buildEditor(); live(); sfx.click(); },
   undo, redo,
-  versions: el=>{ renderVersions(); togglePop('#verPop',el); },
   more: el=>togglePop('#morePop',el),
   autofit: ()=>{ state.settings.autofit=!state.settings.autofit; syncChrome(); renderAll(true); sfx.click(); },
   sound: ()=>{ state.settings.sound=!state.settings.sound; syncChrome(); save(); sfx.click(); },
   zoomin: ()=>{ state.settings.zoom=clamp(+(state.settings.zoom+.1).toFixed(2),.5,2); sizeWrap(); save(); sfx.click(); },
   zoomout: ()=>{ state.settings.zoom=clamp(+(state.settings.zoom-.1).toFixed(2),.5,2); sizeWrap(); save(); sfx.click(); },
   export: exportPDF,
-  'ver-save': ()=>{
-    const inp = $('#verName'), name = inp.value.trim(); if(!name){ inp.focus(); return; }
-    state.versions[name] = {cv:JSON.parse(JSON.stringify(state.cv)), saved:Date.now()};
-    save(); renderVersions(); toast(`Saved version “${name}”`); sfx.snap();
+  'tab-switch': el=>switchTab(el.dataset.id),
+  'tab-new': ()=>{
+    syncTab(); pushHistory();
+    const n = state.tabs.length+1, t = {id:uid(), name:'Version '+n, cv:JSON.parse(JSON.stringify(state.cv))};
+    state.tabs.push(t); state.activeTab = t.id; state.cv = t.cv;
+    renderAll(true); sfx.pop();
+    $(`#tabs .tab[data-id="${t.id}"]`)?.classList.add('pop');
+    renameTab(t.id);
   },
-  'ver-load': el=>{
-    const v = state.versions[el.dataset.name]; if(!v) return;
-    pushHistory();
-    state.cv = JSON.parse(JSON.stringify(v.cv)).filter(s=>secById(s.sec)).map(s=>({sec:s.sec,items:s.items.filter(id=>state.items[id])}));
-    closePops(); renderAll(true); sfx.snap(); toast(`Loaded “${el.dataset.name}”`);
+  'tab-close': el=>{
+    const id = el.dataset.id, t = state.tabs.find(x=>x.id===id);
+    if (!t || state.tabs.length===1) return;
+    if (!confirm(`Close "${t.name}"? Only this layout is removed; every block stays in your library. You can undo this.`)) return;
+    syncTab(); pushHistory();
+    const i = state.tabs.indexOf(t);
+    state.tabs.splice(i,1);
+    if (state.activeTab===id){ state.activeTab = state.tabs[Math.max(0,i-1)].id; }
+    state.cv = activeTab().cv;
+    renderAll(true); sfx.remove();
   },
-  'ver-del': el=>{ delete state.versions[el.dataset.name]; save(); renderVersions(); sfx.remove(); },
   backup: ()=>{
     const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cv-blocks-backup.json'; a.click();
@@ -1054,17 +1125,18 @@ const act = {
   },
   restore: ()=>{ $('#restoreFile').click(); closePops(); },
   blank: ()=>{
-    if (!confirm('Start a blank CV? Every block in your library will be cleared (you can undo this, and saved versions are kept).')) return;
+    if (!confirm('Start a blank CV? Every block in your library will be cleared, and you will have a single empty layout. You can undo this.')) return;
     pushHistory();
     state.header = {name:'YOUR NAME',location:'City, Country',contacts:[{t:'you@email.com',u:''},{t:'+00 000 000 0000',u:''},{t:'linkedin.com/in/you',u:''}]};
     state.items = {};
     state.sections.forEach(s=>state.libOrder[s.id]=[]);
     state.cv = state.sections.filter(s=>s.kind!=='text').map(s=>({sec:s.id,items:[]}));
+    state.tabs = [{id:uid(), name:'Main', cv:state.cv}]; state.activeTab = state.tabs[0].id;
     closeEditor(); closePops(); renderAll(true); sfx.snap(); toast('Blank CV ready — click + on a section to add blocks');
   },
   reset: ()=>{
-    if (!confirm('Reset everything to the starter template? Your library will be replaced (saved versions are kept, and you can undo this).')) return;
-    pushHistory(); const v = state.versions; state = Object.assign(defaults(),{versions:v}); closeEditor(); closePops(); syncChrome(); renderAll(true); sfx.snap();
+    if (!confirm('Reset everything to the starter template? Your library and version tabs will be replaced. You can undo this.')) return;
+    pushHistory(); state = defaults(); migrateTabs(); closeEditor(); closePops(); syncChrome(); renderAll(true); sfx.snap();
   }
 };
 function moveBullet(i,dir){
@@ -1075,12 +1147,13 @@ function moveBullet(i,dir){
 document.addEventListener('click', e=>{
   if (e.target.closest('#page a')) e.preventDefault();
   if (suppressClick) return;
-  if (!e.target.closest('.popover,#verBtn,#moreBtn')) closePops();
+  if (!e.target.closest('.popover,#moreBtn')) closePops();
   const a = e.target.closest('[data-act]');
   if (a && act[a.dataset.act]){ act[a.dataset.act](a,e); return; }
   const c = e.target.closest('[data-click]');
   if (c){ const [k,id] = c.dataset.click.split(':'); openEditor(k==='header'?'header':k, id); sfx.click(); }
 });
+document.addEventListener('dblclick', e=>{ const t = e.target.closest('#tabs .tab'); if (t) renameTab(t.dataset.id); });
 document.addEventListener('keydown', e=>{
   const typing = e.target.closest('input,textarea,select');
   const mod = e.metaKey||e.ctrlKey;
@@ -1088,12 +1161,11 @@ document.addEventListener('keydown', e=>{
   if (mod && e.key.toLowerCase()==='z' && !typing){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
   if (mod && e.key.toLowerCase()==='y' && !typing){ e.preventDefault(); redo(); return; }
   if (e.key==='Escape'){ if(drag) endDrag(true); else if($('.popover.open')) closePops(); else if(ui.editing) closeEditor(); }
-  if (e.key==='Enter' && e.target.id==='verName') act['ver-save']();
   if (e.key==='Enter' && e.target.id==='ns-title') act['sec-create']();
 });
 $('#restoreFile').addEventListener('change', async ev=>{
   const f = ev.target.files[0]; if(!f) return;
-  try{ const s = JSON.parse(await f.text()); if(!s.sections||!s.items) throw 0; pushHistory(); state = s; state.versions ||= {}; state.settings ||= {autofit:true,sound:true,zoom:1}; closeEditor(); syncChrome(); renderAll(true); toast('Backup restored'); }
+  try{ const s = JSON.parse(await f.text()); if(!s.sections||!s.items) throw 0; pushHistory(); state = s; state.settings ||= {autofit:true,sound:true,zoom:1}; migrateTabs(); closeEditor(); syncChrome(); renderAll(true); toast('Backup restored'); }
   catch(_){ toast('That file is not a CV Blocks backup'); }
   ev.target.value='';
 });
@@ -1107,12 +1179,6 @@ function togglePop(sel,trigger){
   p.classList.add('open'); sfx.click();
 }
 function closePops(){ document.querySelectorAll('.popover.open').forEach(p=>p.classList.remove('open')); }
-function renderVersions(){
-  const names = Object.keys(state.versions).sort((a,b)=>state.versions[b].saved-state.versions[a].saved);
-  $('#verPop').innerHTML = `<div class="pop-title">Saved versions</div>`
-    + (names.length ? names.map(n=>`<button class="pop-item" data-act="ver-load" data-name="${esc(n)}">${esc(n)}<span class="x" data-act="ver-del" data-name="${esc(n)}" title="Delete">×</span></button>`).join('') : `<div class="pop-empty">Save the current arrangement of blocks — e.g. “Embedded roles”, “Product / startups” — and switch back any time.</div>`)
-    + `<div class="pop-row"><input type="text" id="verName" placeholder="Name this version"><button class="btn primary" data-act="ver-save">Save</button></div>`;
-}
 function syncChrome(){
   $('#fitSwitch').classList.toggle('on', state.settings.autofit);
   $('#soundBtn').innerHTML = state.settings.sound ? SOUND_ON : SOUND_OFF;
@@ -1134,6 +1200,7 @@ async function exportPDF(){
 
 if (window.cvApp) document.body.classList.add('is-app','plat-'+window.cvApp.platform);
 new ResizeObserver(()=>sizeWrap()).observe(stage);
+migrateTabs();
 syncChrome(); updateUndo();
 renderAll(false);
 document.fonts?.ready.then(()=>fit());
