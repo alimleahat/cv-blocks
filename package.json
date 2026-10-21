@@ -1,7 +1,7 @@
 {
   "name": "cv-blocks",
   "productName": "CV Blocks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Drag-and-drop CV builder: snap blocks in and out, auto-fit to one page, export to PDF.",
   "author": "Ali Mleahat",
   "license": "MIT",
