@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV Blocks</title>
+<style>
+:root{
+  --ink:#1d1d1f; --ink-2:#3a3a3c; --muted:#6e6e73; --faint:#a1a1a6;
+  --hair:rgba(0,0,0,.08);
+  --glass:rgba(255,255,255,.62); --glass-strong:rgba(255,255,255,.74);
+  --blur:blur(30px) saturate(190%);
+  --shadow-glass:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.3),0 0 0 .5px rgba(0,0,0,.07),0 12px 34px rgba(0,0,0,.07),0 2px 6px rgba(0,0,0,.04);
+  --ease:cubic-bezier(.2,.9,.25,1); --spring:cubic-bezier(.3,1.45,.5,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",sans-serif;color:var(--ink);font-size:13px;letter-spacing:-.003em;-webkit-font-smoothing:antialiased;overflow:hidden;
+  background-color:#ececef;
+  background-image:
+    radial-gradient(1100px 650px at 8% -8%,#ffffff 0%,rgba(255,255,255,0) 60%),
+    radial-gradient(800px 560px at 96% 4%,#d5d7df 0%,rgba(213,215,223,0) 60%),
+    radial-gradient(1000px 760px at 62% 112%,#d9dbe1 0%,rgba(217,219,225,0) 62%),
+    linear-gradient(180deg,#f4f4f6,#e6e7eb);
+  background-attachment:fixed}
+button{font:inherit;color:inherit}
+#app{display:grid;grid-template-columns:318px 1fr;grid-template-rows:62px 1fr;height:100vh}
+
+/* ---------- liquid glass material ---------- */
+.glass{background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow-glass);isolation:isolate}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:linear-gradient(165deg,rgba(255,255,255,.75) 0%,rgba(255,255,255,0) 34%,rgba(255,255,255,0) 72%,rgba(255,255,255,.35) 100%)}
+
+/* ---------- top bar ---------- */
+.topbar{grid-column:1/-1;grid-row:1;pointer-events:none;display:flex;align-items:center;gap:10px;padding:12px 14px 0;z-index:30;position:relative;-webkit-app-region:drag}
+.topbar>*{-webkit-app-region:no-drag;pointer-events:auto}
+/* soft scroll-edge blur where the page slides under the toolbar */
+.topbar::after{content:"";position:absolute;left:0;right:0;top:0;height:84px;z-index:-1;pointer-events:none;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(238,238,241,.7),rgba(238,238,241,0));-webkit-mask-image:linear-gradient(180deg,#000 45%,transparent);mask-image:linear-gradient(180deg,#000 45%,transparent)}
+body.plat-darwin .topbar{padding-left:86px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;font-size:14px;letter-spacing:-.015em;margin-right:auto;-webkit-app-region:drag;user-select:none}
+.logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(160deg,#48484a,#1d1d1f);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 4px 12px rgba(0,0,0,.2)}
+.logo i{background:rgba(255,255,255,.95);border-radius:2px}
+.logo i:nth-child(2){opacity:.55}.logo i:nth-child(3){opacity:.75}
+.brand small{font-weight:500;color:var(--faint);font-size:12px}
+.tgroup{display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;position:relative}
+.tsep{width:1px;height:18px;background:rgba(0,0,0,.1);margin:0 4px}
+.btn{height:32px;padding:0 13px;border-radius:999px;border:0;background:transparent;font-weight:560;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .14s var(--spring),background .15s,box-shadow .15s;white-space:nowrap;user-select:none;color:var(--ink)}
+.btn:hover{background:rgba(0,0,0,.055)}
+.btn:active{transform:scale(.93);background:rgba(0,0,0,.09)}
+.btn.icon{width:32px;padding:0;justify-content:center;font-size:16px}
+.btn.primary{height:40px;padding:0 18px;background:linear-gradient(180deg,#3a3a3c,#1d1d1f);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 .5px rgba(0,0,0,.4),0 8px 20px rgba(0,0,0,.18)}
+.tgroup .btn.primary,.ed-foot .btn.primary,.pop-row .btn.primary{height:32px;padding:0 14px}
+.btn.primary:hover{background:linear-gradient(180deg,#4a4a4c,#2c2c2e)}
+.btn:disabled{opacity:.3;pointer-events:none}
+.btn svg{width:15px;height:15px;flex:none}
+.switch{display:inline-flex;align-items:center;gap:8px;font-weight:560;font-size:12.5px;cursor:pointer;user-select:none;padding:0 10px 0 6px;height:32px;border-radius:999px;transition:background .15s}
+.switch:hover{background:rgba(0,0,0,.055)}
+.switch .track{width:34px;height:20px;border-radius:20px;background:rgba(0,0,0,.14);position:relative;transition:background .25s;box-shadow:inset 0 1px 2px rgba(0,0,0,.1)}
+.switch .track::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25),0 0 0 .5px rgba(0,0,0,.05);transition:transform .3s var(--spring),width .2s}
+.switch:active .track::after{width:20px}
+.switch.on .track{background:#1d1d1f}
+.switch.on .track::after{transform:translateX(14px)}
+.switch.on:active .track::after{transform:translateX(10px)}
+.zoomval{font-variant-numeric:tabular-nums;font-weight:560;font-size:12px;color:var(--muted);width:40px;text-align:center}
+
+.popover{position:absolute;top:58px;background:var(--glass-strong);border-radius:18px;padding:8px;min-width:270px;max-width:320px;opacity:0;transform:translateY(-6px) scale(.97);transform-origin:top right;pointer-events:none;transition:opacity .18s,transform .26s var(--spring);z-index:50;box-shadow:var(--shadow-glass),0 24px 60px rgba(0,0,0,.16)}
+.popover.open{opacity:1;transform:none;pointer-events:auto}
+.pop-title{font-size:11px;font-weight:600;color:var(--muted);padding:6px 10px 6px}
+.pop-item{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:500}
+.pop-item:hover{background:rgba(0,0,0,.055)}
+.pop-item .x{margin-left:auto;opacity:.4;border:0;background:none;cursor:pointer;padding:2px 7px;border-radius:999px}
+.pop-item .x:hover{opacity:1;background:rgba(255,59,48,.12);color:#ff3b30}
+.pop-empty{color:var(--muted);padding:4px 10px 10px;font-size:12px;line-height:1.5}
+.pop-row{display:flex;gap:6px;padding:8px 2px 2px;border-top:.5px solid var(--hair);margin-top:6px}
+.pop-row input{flex:1}
+
+/* ---------- library ---------- */
+#library{margin:10px 0 12px 12px;border-radius:24px;overflow:auto;padding:16px 10px 90px;position:relative;z-index:5;scrollbar-width:thin}
+.lib-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 8px 12px}
+.lib-head h2{font-size:15px;font-weight:650;letter-spacing:-.02em;margin:0}
+.lib-head span{font-size:11.5px;color:var(--muted)}
+.lib-sec{margin-bottom:8px;border-radius:18px;background:rgba(255,255,255,.34);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.7),0 0 0 .5px rgba(0,0,0,.04);transition:background .2s}
+.lib-sec-head{display:flex;align-items:center;gap:8px;padding:9px 8px 9px 10px;cursor:grab;user-select:none;font-weight:600;border-radius:18px;touch-action:none;transition:background .15s}
+.lib-sec-head:hover{background:rgba(255,255,255,.45)}
+.lib-sec-head .grip{color:#b9b9be;display:flex}
+.lib-sec-head .dot{display:none}
+.lib-sec.on-cv .ls-name::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:#1d1d1f;margin-left:7px;vertical-align:middle;opacity:.55}
+.ls-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ls-count{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:500}
+.mini{width:24px;height:24px;border-radius:999px;border:0;background:transparent;cursor:pointer;color:var(--muted);display:grid;place-items:center;font-size:14px;transition:background .15s,transform .14s var(--spring)}
+.mini:hover{background:rgba(255,255,255,.85);color:var(--ink);box-shadow:0 0 0 .5px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.08)}
+.mini:active{transform:scale(.86)}
+.chev{color:var(--faint);transition:transform .28s var(--spring);display:flex;width:16px;justify-content:center}
+.lib-sec.collapsed .chev{transform:rotate(-90deg)}
+.lib-items-wrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .3s var(--ease)}
+.lib-sec.collapsed .lib-items-wrap{grid-template-rows:0fr}
+.lib-items{overflow:hidden;min-height:0}
+.lib-items-inner{padding:0 6px 6px;display:flex;flex-direction:column;gap:5px}
+.lib-card{background:rgba(255,255,255,.82);border-radius:13px;padding:9px 11px;cursor:grab;position:relative;transition:transform .2s var(--spring),box-shadow .2s,opacity .2s,background .2s;user-select:none;touch-action:none;box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04)}
+.lib-card:hover{transform:translateY(-1px);background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 8px 22px rgba(0,0,0,.08)}
+.lib-card:active{transform:scale(.98)}
+.lc-title{font-weight:600;font-size:12.5px;line-height:1.3;padding-right:64px}
+.lc-meta{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lc-title b,.lc-meta b{font-weight:inherit}
+.lc-badge{position:absolute;top:7px;right:7px;height:22px;padding:0 9px;border-radius:999px;border:0;background:rgba(0,0,0,.05);font-size:11px;font-weight:600;cursor:pointer;color:var(--ink-2);transition:all .2s var(--spring)}
+.lc-badge:hover{background:rgba(0,0,0,.09)}
+.lc-badge:active{transform:scale(.88)}
+.lib-card.placed{background:rgba(255,255,255,.5)}
+.lib-card.placed .lc-title{color:var(--muted)}
+.lib-card.placed .lc-badge{background:#1d1d1f;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.lib-card.lifting,.lib-sec-head.lifting{opacity:.3;transform:scale(.97)}
+.lib-card.editing{box-shadow:0 0 0 1.5px #1d1d1f,0 8px 22px rgba(0,0,0,.08);background:#fff}
+.lib-card.flash{animation:flash .7s var(--ease)}
+@keyframes flash{0%{box-shadow:0 0 0 5px rgba(0,0,0,.14)}100%{box-shadow:0 0 0 0 rgba(0,0,0,0)}}
+.lib-empty{font-size:12px;color:var(--faint);padding:8px 6px;text-align:center}
+.lib-new{width:100%;height:40px;border:0;border-radius:16px;background:rgba(255,255,255,.3);box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);color:var(--muted);font-weight:600;cursor:pointer;transition:all .18s var(--spring)}
+.lib-new:hover{background:rgba(255,255,255,.7);color:var(--ink)}
+.lib-new:active{transform:scale(.97)}
+.lib-tip{margin:14px 8px 0;font-size:11.5px;color:var(--muted);line-height:1.55}
+.lib-tip kbd{font-family:inherit;font-size:10.5px;background:rgba(255,255,255,.8);box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 0 rgba(0,0,0,.1);border-radius:5px;padding:0 5px}
+.remove-zone{position:fixed;left:12px;top:72px;width:306px;bottom:12px;border-radius:24px;z-index:40;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .2s;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);box-shadow:inset 0 0 0 1.5px rgba(255,59,48,.35)}
+.remove-zone div{display:flex;flex-direction:column;align-items:center;gap:10px;color:#ff3b30;font-weight:600;transform:scale(.9);transition:transform .3s var(--spring)}
+.remove-zone svg{width:30px;height:30px}
+body.drag-from-cv .remove-zone.show{opacity:1}
+.remove-zone.show div{transform:scale(1)}
+
+/* ---------- stage ---------- */
+#main{position:relative;overflow:hidden;grid-column:1/-1;grid-row:1/-1;z-index:0}
+#library{grid-column:1;grid-row:2}
+#stage{position:absolute;inset:0;overflow:auto;padding:92px 64px 120px 382px;transition:padding .34s var(--ease)}
+#main.editor-open #stage{padding-right:410px}
+#pageWrap{margin:0 auto;position:relative}
+#page{position:relative;transform-origin:0 0;width:210mm;min-height:297mm;padding:28pt 36pt 26pt;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.05),0 34px 80px rgba(0,0,0,.13);border-radius:3px;transition:box-shadow .2s}
+#page.drop-page{box-shadow:0 0 0 2px rgba(0,0,0,.14),0 34px 80px rgba(0,0,0,.13)}
+.cv-inner{display:flow-root}
+.page-break{position:absolute;left:-14px;right:-14px;height:0;border-top:1.5px dashed #ff9f0a;pointer-events:none}
+.page-break span{position:absolute;right:0;top:-24px;font:600 10.5px -apple-system,sans-serif;color:#1d1d1f;background:rgba(255,255,255,.8);box-shadow:0 0 0 .5px rgba(0,0,0,.1);padding:3px 9px;border-radius:999px}
+
+.fit-pill{position:absolute;left:calc(318px + (100% - 318px)/2);bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:9px;border-radius:999px;padding:9px 16px 9px 14px;font-weight:600;font-size:12px;z-index:10;transition:left .34s var(--ease);white-space:nowrap}
+#main.editor-open .fit-pill{left:calc(318px + (100% - 318px - 400px)/2)}
+.fit-pill .ind{width:8px;height:8px;border-radius:50%;font-size:0}
+.fit-pill.ok .ind{background:#34c759;box-shadow:0 0 0 3px rgba(52,199,89,.18)}
+.fit-pill.warn .ind{background:#ff9f0a;box-shadow:0 0 0 3px rgba(255,159,10,.2)}
+.fit-pill .sub{color:var(--muted);font-weight:500}
+
+/* ---------- CV typography (scoped) ----------
+   Classic LaTeX look, after Jake Gutierrez's "Jake's Resume" (MIT). */
+@font-face{font-family:"CMU Serif";font-style:normal;font-weight:400;src:url("fonts/cmu-serif-500-roman.woff2") format("woff2")}
+@font-face{font-family:"CMU Serif";font-style:italic;font-weight:400;src:url("fonts/cmu-serif-500-italic.woff2") format("woff2")}
+@font-face{font-family:"CMU Serif";font-style:normal;font-weight:700;src:url("fonts/cmu-serif-700-roman.woff2") format("woff2")}
+@font-face{font-family:"CMU Serif";font-style:italic;font-weight:700;src:url("fonts/cmu-serif-700-italic.woff2") format("woff2")}
+.cv{--fs:1;--sp:1;font-family:"CMU Serif","Latin Modern Roman","Computer Modern",Georgia,serif;color:#000;font-size:calc(10pt*var(--fs));line-height:1.2;text-align:left;font-kerning:normal}
+.cv a{color:inherit;text-decoration:none}
+.cv b{font-weight:bold}
+.cv-header{text-align:center;padding-bottom:calc(2pt*var(--sp));border-radius:4px;cursor:pointer;position:relative}
+.cv-name{font-size:calc(24.5pt*var(--fs));font-weight:bold;font-variant:small-caps;line-height:1.1;letter-spacing:.2pt}
+.cv-loc{font-size:calc(10pt*var(--fs));margin-top:calc(3pt*var(--sp))}
+.cv-contacts{font-size:calc(10pt*var(--fs));margin-top:calc(2pt*var(--sp))}
+.cv-contacts a{text-decoration:underline;text-decoration-thickness:.4pt;text-underline-offset:1.5pt}
+.cv-contacts .bar{margin:0 3.5pt}
+.cv-sec{position:relative;margin-top:calc(7pt*var(--sp))}
+.sec-h{font-size:calc(12pt*var(--fs));font-variant:small-caps;font-weight:normal;letter-spacing:.3pt;line-height:1.2;padding-bottom:1.5pt;border-bottom:.6pt solid #000;margin-bottom:calc(5pt*var(--sp));cursor:grab}
+.sec-body{padding:0 6pt 0 11pt}
+.cv-item{position:relative;border-radius:3px}
+.kind-entries .sec-body>.cv-item+.cv-item,.kind-text .sec-body>.cv-item+.cv-item{margin-top:calc(5pt*var(--sp))}
+.e-row{display:flex;justify-content:space-between;align-items:baseline;gap:10pt}
+.e-left{min-width:0}
+.e-title{font-weight:bold;font-size:calc(11pt*var(--fs))}
+.e-title .lnk{display:inline-block;width:calc(8.5pt*var(--fs));height:calc(8.5pt*var(--fs));margin-left:2pt;vertical-align:.1em}
+.e-note{font-size:calc(11pt*var(--fs))}
+.e-tech{font-style:italic;font-size:calc(10pt*var(--fs))}
+.e-tech .bar{font-style:normal;margin:0 3pt}
+.e-date{white-space:nowrap;flex:none;font-size:calc(11pt*var(--fs))}
+.e-row2{font-style:italic;font-size:calc(10pt*var(--fs));margin-top:calc(.5pt*var(--sp))}
+.e-row2 .e-place{white-space:nowrap;flex:none}
+.e-techline{font-style:italic;font-size:calc(10pt*var(--fs));margin-top:calc(1pt*var(--sp))}
+.e-detail{font-size:calc(10pt*var(--fs));margin-top:calc(2pt*var(--sp))}
+.e-detail .lbl{font-weight:bold}
+.e-bullets{list-style:none;margin:calc(2.5pt*var(--sp)) 0 0;padding:0 0 0 17pt}
+.e-bullets li{position:relative;font-size:calc(10pt*var(--fs));line-height:1.22}
+.e-bullets li+li{margin-top:calc(.5pt*var(--sp))}
+.e-bullets li::before{content:"\2022";position:absolute;left:-10pt;top:-.05em;font-size:1.05em}
+.kind-skills .sec-body>.cv-item+.cv-item{margin-top:calc(1pt*var(--sp))}
+.sk-line{font-size:calc(10pt*var(--fs));line-height:1.3}
+.sk-title{font-weight:bold}
+.t-para{margin:0;font-size:calc(10pt*var(--fs));line-height:1.3}
+
+/* CV editing affordances (screen only) */
+#page .cv-item,#page .cv-header{cursor:grab;transition:background .15s,box-shadow .15s}
+#page .cv-header{cursor:pointer}
+#page .cv-item:hover,#page .cv-header:hover{background:rgba(0,0,0,.025);box-shadow:0 0 0 3pt rgba(0,0,0,.025)}
+#page .cv-item.editing,#page .cv-header.editing{background:rgba(0,0,0,.03);box-shadow:0 0 0 3pt rgba(0,0,0,.03),0 0 0 calc(3pt + 1.2px) rgba(0,0,0,.55)}
+.ui{position:absolute;opacity:0;pointer-events:none;transition:opacity .15s,transform .22s var(--spring);font-family:-apple-system,sans-serif;z-index:3}
+.ui-x{right:-36px;top:0;width:24px;height:24px;border-radius:999px;border:0;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:15px;line-height:1;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 3px 10px rgba(0,0,0,.1);transform:scale(.7)}
+.ui-x:hover{color:#ff3b30;background:#fff}
+.sec-grip{left:-36px;top:0;width:24px;height:28px;border-radius:999px;background:rgba(255,255,255,.8);display:grid;place-items:center;color:var(--faint);cursor:grab;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 3px 10px rgba(0,0,0,.1);transform:scale(.7)}
+.sec-x{top:0;right:-36px}
+.cv-item:hover>.ui,.cv-sec:hover>.ui{opacity:1;pointer-events:auto;transform:none}
+.cv-sec:hover>.sec-x{top:30px}
+body.is-dragging .ui{display:none}
+.empty-hint{display:none}
+.cv-sec.is-empty .empty-hint{display:block;width:100%;border:1.5px dashed rgba(0,0,0,.16);border-radius:8px;padding:9pt;text-align:center;color:#8e8e93;font:500 11px -apple-system,sans-serif}
+.cv-sec.no-h::before{content:attr(data-title);position:absolute;left:0;top:-13px;font:600 9px -apple-system,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#a1a1a6;opacity:0;transition:opacity .15s}
+.cv-sec.no-h:hover::before{opacity:1}
+#page.measuring .cv-sec.is-empty{display:none}
+
+/* ghosts & drag */
+.cv .ghost{opacity:.4;outline:1.5px dashed rgba(0,0,0,.45);outline-offset:2px;background:rgba(0,0,0,.03)!important;box-shadow:none!important}
+.cv .ghost .ghost{outline:none;background:none!important}
+.drop-ok>.sec-body{border-radius:5px;box-shadow:0 0 0 4pt rgba(0,0,0,.025);background:rgba(0,0,0,.02)}
+.drag-clone{position:fixed;z-index:1000;pointer-events:none;will-change:transform,left,top;transition:transform .22s var(--spring),box-shadow .22s,opacity .2s,filter .2s}
+.drag-clone.cv-clone{background:#fff;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.drag-clone.cv-clone>*{background:#fff!important;box-shadow:none!important;outline:none!important;opacity:1!important}
+.drag-clone.lib-clone{border-radius:13px}
+.drag-clone.lib-clone>*{opacity:1!important;transform:none!important;margin:0;background:rgba(255,255,255,.92)!important}
+.drag-clone.lib-clone>.lib-sec-head{box-shadow:0 0 0 .5px rgba(0,0,0,.08)}
+.drag-clone.lifted{box-shadow:0 26px 60px rgba(0,0,0,.22),0 6px 16px rgba(0,0,0,.1),0 0 0 .5px rgba(0,0,0,.06)}
+.drag-clone.flying{transition:left .28s var(--spring),top .28s var(--spring),transform .28s var(--spring),opacity .14s .17s,box-shadow .2s}
+.drag-clone.returning{transition:left .32s var(--ease),top .32s var(--ease),transform .32s var(--ease),opacity .2s .12s}
+.drag-clone.poof{transition:transform .24s var(--ease),opacity .24s,filter .24s;opacity:0;filter:blur(4px)}
+body.is-dragging,body.is-dragging *{cursor:grabbing!important;user-select:none!important}
+.cv .snapped{animation:snap .7s var(--ease)}
+@keyframes snap{0%{background:rgba(0,0,0,.06);box-shadow:0 0 0 0 rgba(0,0,0,.18)}100%{background:transparent;box-shadow:0 0 0 14px rgba(0,0,0,0)}}
+
+/* ---------- editor drawer ---------- */
+#editor{position:absolute;top:72px;right:12px;bottom:12px;width:378px;background:var(--glass-strong);border-radius:26px;box-shadow:var(--shadow-glass),0 30px 80px rgba(0,0,0,.16);transform:translateX(calc(100% + 30px)) scale(.98);opacity:.6;transition:transform .42s var(--spring),opacity .3s;display:flex;flex-direction:column;z-index:20;overflow:hidden}
+#editor.open{transform:none;opacity:1}
+.ed-head{display:flex;align-items:center;gap:10px;padding:16px 14px 12px 18px}
+.ed-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.06);color:var(--ink-2)}
+.ed-head h3{margin:0;font-size:15px;font-weight:650;letter-spacing:-.02em;flex:1}
+.ed-body{flex:1;overflow:auto;padding:6px 18px 20px}
+.ed-foot{display:flex;gap:6px;padding:12px 14px;border-top:.5px solid var(--hair);background:rgba(255,255,255,.35)}
+.ed-foot .btn:not(.primary){background:rgba(255,255,255,.75);box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.05)}
+.ed-foot .grow{flex:1}
+.fld{margin-bottom:12px}
+.fld label,.ed-label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
+.fld label em,.ed-label em{font-style:normal;color:var(--faint);font-weight:500}
+input[type=text],input[type=url],textarea,select{width:100%;font:inherit;font-size:13px;border:0;border-radius:11px;padding:8px 11px;background:rgba(255,255,255,.75);color:var(--ink);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12),inset 0 1px 2px rgba(0,0,0,.03);transition:box-shadow .18s,background .18s;outline:none}
+textarea{resize:none;line-height:1.45;display:block;overflow:hidden}
+input:focus,textarea:focus,select:focus{background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.5),0 0 0 4px rgba(0,0,0,.06)}
+.row2{display:grid;grid-template-columns:96px 1fr;gap:8px}
+.b-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.b-row{display:flex;gap:7px;align-items:flex-start;padding:6px;border-radius:14px;background:rgba(255,255,255,.4);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06);transition:opacity .2s}
+.b-row.off{opacity:.45}
+.b-row textarea{font-size:12.5px;padding:6px 9px}
+.chk{appearance:none;-webkit-appearance:none;width:19px;height:19px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px #c7c7cc;margin:6px 0 0;flex:none;cursor:pointer;display:grid;place-items:center;transition:all .22s var(--spring);background:#fff}
+.chk:checked{background:#1d1d1f;box-shadow:none}
+.chk:checked::after{content:"";width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.chk:active{transform:scale(.82)}
+.b-tools{display:flex;flex-direction:column;gap:1px}
+.b-tools .mini{width:22px;height:20px;font-size:10px}
+.addline{width:100%;height:36px;border:0;border-radius:12px;background:rgba(255,255,255,.4);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);color:var(--muted);font-weight:600;cursor:pointer;transition:all .18s var(--spring)}
+.addline:hover{background:rgba(255,255,255,.8);color:var(--ink)}
+.addline:active{transform:scale(.98)}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.5;margin:6px 0 12px}
+.hint code{background:rgba(0,0,0,.05);border-radius:5px;padding:1px 5px;font-size:11px}
+.btn.danger:hover{color:#ff3b30;background:rgba(255,59,48,.08)!important}
+.checkline{display:flex;align-items:center;gap:9px;font-weight:550;cursor:pointer;margin:4px 0 14px}
+.checkline .chk{margin:0}
+.ct-row{display:grid;grid-template-columns:1fr 1fr 24px;gap:6px;margin-bottom:6px;align-items:center}
+
+.toast{position:fixed;left:calc(318px + (100% - 318px)/2);top:74px;transform:translate(-50%,-10px) scale(.96);background:rgba(28,28,30,.78);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);color:#fff;padding:10px 18px;border-radius:999px;font-weight:550;font-size:12.5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 14px 34px rgba(0,0,0,.22);opacity:0;transition:all .3s var(--spring);z-index:2000;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- print = the PDF ---------- */
+@media print{
+  @page{size:A4;margin:0}
+  html,body{background:#fff!important;height:auto!important;overflow:visible!important}
+  body *{visibility:hidden}
+  #page,#page *{visibility:visible}
+  .topbar,#library,#editor,.fit-pill,.remove-zone,.toast,.popover{display:none!important}
+  #app{display:block;height:auto}
+  #main{overflow:visible}
+  #stage{position:static;overflow:visible;padding:0!important}
+  #pageWrap{width:auto!important;height:auto!important;margin:0}
+  #page{transform:none!important;box-shadow:none!important;border-radius:0;min-height:0!important;margin:0}
+  #page .ui,#page .page-break,#page .empty-hint,#page .cv-sec.is-empty{display:none!important}
+  #page .cv-item,#page .cv-header{background:none!important;box-shadow:none!important}
+  .cv-item{break-inside:avoid}
+  .sec-h{break-after:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo"><i></i><i></i><i></i><i></i></div>CV Blocks <small id="saveState">Saved</small></div>
+    <div class="tgroup glass">
+      <button class="btn icon" data-act="undo" id="undoBtn" title="Undo (⌘Z)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button class="btn icon" data-act="redo" id="redoBtn" title="Redo (⇧⌘Z)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+    </div>
+    <div class="tgroup glass">
+      <button class="btn" data-act="versions" id="verBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Versions</button>
+      <span class="tsep"></span>
+      <div class="switch" data-act="autofit" id="fitSwitch" title="Automatically adjust spacing and size to fit one page"><span class="track"></span>Auto-fit</div>
+    </div>
+    <div class="tgroup glass">
+      <button class="btn icon" data-act="zoomout" title="Zoom out">−</button>
+      <span class="zoomval" id="zoomVal">100%</span>
+      <button class="btn icon" data-act="zoomin" title="Zoom in">+</button>
+      <span class="tsep"></span>
+      <button class="btn icon" data-act="sound" id="soundBtn" title="Sound"></button>
+      <button class="btn icon" data-act="more" id="moreBtn" title="More">⋯</button>
+    </div>
+    <button class="btn primary" data-act="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Export PDF</button>
+    <div class="popover glass" id="verPop"></div>
+    <div class="popover glass" id="morePop">
+      <div class="pop-title">Data</div>
+      <button class="pop-item" data-act="backup">Download backup (.json)</button>
+      <button class="pop-item" data-act="restore">Restore from backup…</button>
+      <button class="pop-item" data-act="blank">Start a blank CV</button>
+      <button class="pop-item" data-act="reset">Reset to starter template</button>
+      <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+    </div>
+  </header>
+
+  <aside id="library" class="glass">
+    <div class="lib-head"><h2>Library</h2><span id="libCount"></span></div>
+    <div id="libList"></div>
+    <div class="lib-tip">Drag blocks or whole sections onto the page. Drag them back here to remove. Click any block to edit. <kbd>⌘Z</kbd> undo · <kbd>⌘P</kbd> export</div>
+  </aside>
+
+  <main id="main">
+    <div id="stage">
+      <div id="pageWrap"><div id="page" class="cv"><div class="cv-inner"></div><div class="breaks"></div></div></div>
+    </div>
+    <div class="fit-pill glass ok" id="fitPill"><span class="ind">✓</span><span id="fitText">Fits on one page</span></div>
+    <aside id="editor" class="glass"></aside>
+  </main>
+</div>
+<div class="remove-zone" id="removeZone"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>Release to remove from CV</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= constants ================= */
+const PT = 96/72, PAGE_W = 210*96/25.4, PAGE_H = 297*96/25.4, PAD_Y = 54*PT; // top 28pt + bottom 26pt
+const STORE = 'cvblocks.v1';
+const PALETTE = ['#667eea','#10b981','#f59e0b','#ec4899','#06b6d4','#8b5cf6','#ef4444','#14b8a6'];
+const LINK_SVG = '<svg class="lnk" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+const GRIP = '<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><circle cx="2.5" cy="2.5" r="1.4"/><circle cx="7.5" cy="2.5" r="1.4"/><circle cx="2.5" cy="7" r="1.4"/><circle cx="7.5" cy="7" r="1.4"/><circle cx="2.5" cy="11.5" r="1.4"/><circle cx="7.5" cy="11.5" r="1.4"/></svg>';
+const CHEV = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>';
+const SOUND_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
+const SOUND_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg>';
+
+/* ================= starter template =================
+   Sample content from "Jake's Resume" by Jake Gutierrez (MIT License,
+   https://github.com/jakegut/resume). Jake Ryan is a fictional person.
+   Personal CVs live in each user's own app data (and their backups), never here. */
+function defaults(){
+  const B = (...a)=>a.map(t=>({t,on:true}));
+  const content = {
+    summary:{title:'Summary',kind:'text',hideHeading:true,onCV:false,items:[
+      {text:'Computer Science graduate with full-stack and research experience, looking for a software engineering role. Tailor this line to each application, or leave it off the page.'}
+    ]},
+    education:{title:'Education',kind:'entries',items:[
+      {title:'Southwestern University',date:'Aug. 2018 – May 2021',subtitle:'Bachelor of Arts in Computer Science, Minor in Business',place:'Georgetown, TX'},
+      {title:'Blinn College',date:'Aug. 2014 – May 2018',subtitle:"Associate's in Liberal Arts",place:'Bryan, TX'}
+    ]},
+    work:{title:'Experience',kind:'entries',items:[
+      {title:'Undergraduate Research Assistant',date:'June 2020 – Present',subtitle:'Texas A&M University',place:'College Station, TX',bullets:B(
+        'Developed a REST API using FastAPI and PostgreSQL to store data from learning management systems',
+        'Developed a full-stack web application using Flask, React, PostgreSQL and Docker to analyze GitHub data',
+        'Explored ways to visualize GitHub collaboration in a classroom setting')},
+      {title:'Information Technology Support Specialist',date:'Sep. 2018 – Present',subtitle:'Southwestern University',place:'Georgetown, TX',bullets:B(
+        'Communicate with managers to set up campus computers used on campus',
+        'Assess and troubleshoot computer problems brought by students, faculty and staff',
+        'Maintain upkeep of computers, classroom equipment, and 200 printers across campus')},
+      {title:'Artificial Intelligence Research Assistant',date:'May 2019 – July 2019',subtitle:'Southwestern University',place:'Georgetown, TX',bullets:B(
+        'Explored methods to generate video game dungeons based off of The Legend of Zelda',
+        'Developed a game in Java to test the generated dungeons',
+        'Contributed 50K+ lines of code to an established codebase via Git',
+        'Conducted a human subject study to determine which video game dungeon generation technique is enjoyable',
+        'Wrote an 8-page paper and gave multiple presentations on-campus',
+        'Presented virtually to the World Conference on Computational Intelligence')}
+    ]},
+    projects:{title:'Projects',kind:'entries',items:[
+      {title:'Gitlytics',tech:'Python, Flask, React, PostgreSQL, Docker',date:'June 2020 – Present',bullets:B(
+        'Developed a full-stack web application using with Flask serving a REST API with React as the frontend',
+        "Implemented GitHub OAuth to get data from user's repositories",
+        'Visualized GitHub data to show collaboration',
+        'Used Celery and Redis for asynchronous tasks')},
+      {title:'Simple Paintball',tech:'Spigot API, Java, Maven, TravisCI, Git',date:'May 2018 – May 2020',bullets:B(
+        'Developed a Minecraft server plugin to entertain kids during free time for a previous job',
+        'Published plugin to websites gaining 2K+ downloads and an average 4.5/5-star review',
+        'Implemented continuous delivery using TravisCI to build the plugin upon new a release',
+        'Collaborated with Minecraft server administrators to suggest features and get feedback about the plugin')}
+    ]},
+    extra:{title:'Leadership & Activities',kind:'entries',onCV:false,items:[
+      {title:'Club or Society – Role',date:'Sep. 2019 – May 2021',subtitle:'Organisation',place:'City, State',bullets:B(
+        'Kept in the library, off the page: drag it on when it suits the role you are applying for.')}
+    ]},
+    skills:{title:'Technical Skills',kind:'skills',items:[
+      {title:'Languages',text:'Java, Python, C/C++, SQL (Postgres), JavaScript, HTML/CSS, R'},
+      {title:'Frameworks',text:'React, Node.js, Flask, JUnit, WordPress, Material-UI, FastAPI'},
+      {title:'Developer Tools',text:'Git, Docker, TravisCI, Google Cloud Platform, VS Code, Visual Studio, PyCharm, IntelliJ, Eclipse'},
+      {title:'Libraries',text:'pandas, NumPy, Matplotlib'}
+    ]}
+  };
+  const colors = {summary:'#8b5cf6',education:'#10b981',work:'#667eea',projects:'#f59e0b',extra:'#ec4899',skills:'#06b6d4'};
+  const s = {
+    header:{name:'Jake Ryan',location:'',contacts:[
+      {t:'123-456-7890',u:''},
+      {t:'jake@su.edu',u:'mailto:jake@su.edu'},
+      {t:'linkedin.com/in/jake',u:'https://linkedin.com/in/jake'},
+      {t:'github.com/jake',u:'https://github.com/jake'}]},
+    sections:[], items:{}, libOrder:{}, cv:[], versions:{},
+    settings:{autofit:true,sound:true,zoom:1}
+  };
+  let n = 0;
+  for (const [sid,sec] of Object.entries(content)){
+    s.sections.push({id:sid,title:sec.title,kind:sec.kind,color:colors[sid],hideHeading:!!sec.hideHeading});
+    s.libOrder[sid] = [];
+    for (const it of sec.items){ const id = sid+'-'+(++n); s.items[id] = {id,sec:sid,...it}; s.libOrder[sid].push(id); }
+    if (sec.onCV !== false) s.cv.push({sec:sid,items:[...s.libOrder[sid]]});
+  }
+  return s;
+}
+
+/* ================= state ================= */
+let state;
+try { state = JSON.parse(localStorage.getItem(STORE)); } catch(e) { state = null; }
+if (!state || !state.sections) state = defaults();
+state.versions ||= {}; state.settings ||= {autofit:true,sound:true,zoom:1};
+const ui = {collapsed:{}, editing:null};
+const S = {scale:1};
+const $ = s=>document.querySelector(s);
+const page = $('#page'), inner = page.querySelector('.cv-inner'), stage = $('#stage'), library = $('#library'), libList = $('#libList'), editor = $('#editor'), mainEl = $('#main');
+
+const uid = ()=>Math.random().toString(36).slice(2,9);
+const esc = s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const md = s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+const secById = id=>state.sections.find(s=>s.id===id);
+const cvSec = id=>state.cv.find(s=>s.sec===id);
+const isPlaced = id=>state.cv.some(s=>s.items.includes(id));
+const htmlToEl = h=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstElementChild;};
+function removeItemFromCV(id){ state.cv.forEach(s=>s.items=s.items.filter(x=>x!==id)); }
+
+/* ================= history & persistence ================= */
+const hist = {past:[],future:[]};
+const snap = ()=>JSON.stringify({header:state.header,sections:state.sections,items:state.items,libOrder:state.libOrder,cv:state.cv});
+function pushHistory(){ hist.past.push(snap()); if(hist.past.length>100) hist.past.shift(); hist.future=[]; updateUndo(); }
+function restoreSnap(j){ Object.assign(state, JSON.parse(j)); }
+function undo(){ if(!hist.past.length) return; hist.future.push(snap()); restoreSnap(hist.past.pop()); afterHistory(); }
+function redo(){ if(!hist.future.length) return; hist.past.push(snap()); restoreSnap(hist.future.pop()); afterHistory(); }
+function afterHistory(){ if(ui.editing && !editingExists()) closeEditor(); else if(ui.editing) buildEditor(); renderAll(true); sfx.click(); updateUndo(); }
+function updateUndo(){ $('#undoBtn').disabled=!hist.past.length; $('#redoBtn').disabled=!hist.future.length; }
+let saveT;
+function save(){
+  $('#saveState').textContent='Saving…';
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{ try{ localStorage.setItem(STORE,JSON.stringify(state)); $('#saveState').textContent='Saved'; }catch(e){ $('#saveState').textContent='Not saved — use backup'; } },250);
+}
+
+/* ================= sound ================= */
+const sfx = (()=>{
+  let ctx;
+  const ac = ()=>{ if(!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)(); if(ctx.state==='suspended') ctx.resume(); return ctx; };
+  function tone(f1,f2,dur,type='sine',vol=.08,delay=0){
+    if(!state.settings.sound) return;
+    try{
+      const c=ac(), t=c.currentTime+delay, o=c.createOscillator(), g=c.createGain();
+      o.type=type; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.004); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+      o.connect(g).connect(c.destination); o.start(t); o.stop(t+dur+.03);
+    }catch(e){}
+  }
+  function noise(dur,vol,freq,delay=0){
+    if(!state.settings.sound) return;
+    try{
+      const c=ac(), t=c.currentTime+delay, len=Math.ceil(c.sampleRate*dur), buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0);
+      for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+      const src=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain();
+      src.buffer=buf; f.type='bandpass'; f.frequency.value=freq; f.Q.value=1.2; g.gain.value=vol;
+      src.connect(f).connect(g).connect(c.destination); src.start(t);
+    }catch(e){}
+  }
+  return {
+    pick(){ noise(.03,.35,2600); tone(420,760,.08,'sine',.05); },
+    tick(){ noise(.012,.18,4200); },
+    snap(){ noise(.03,.6,1800); tone(190,95,.11,'triangle',.16); tone(1250,1250,.07,'sine',.03,.025); },
+    remove(){ tone(520,160,.18,'sine',.07); noise(.08,.12,900); },
+    click(){ noise(.018,.25,3400); },
+    pop(){ tone(660,990,.07,'sine',.05); noise(.015,.2,3800); }
+  };
+})();
+
+/* ================= rendering: CV ================= */
+function itemInner(it, kind){
+  if (kind==='skills') return `<div class="sk-line"><span class="sk-title">${md(it.title)}</span>${it.title&&it.text?': ':''}${md(it.text)}</div>`;
+  if (kind==='text') return `<p class="t-para">${md(it.text)}</p>`;
+  const titleIn = md(it.title)+(it.link?LINK_SVG:'');
+  const title = it.title ? (it.link ? `<a class="e-title" href="${esc(it.link)}" target="_blank">${titleIn}</a>` : `<span class="e-title">${titleIn}</span>`) : '';
+  const note = it.note ? `<span class="e-note">, ${md(it.note)}</span>` : '';
+  // Project style: tech sits next to the title when there is no organisation line.
+  const inlineTech = it.tech && !it.subtitle;
+  const tech = inlineTech ? `<span class="e-tech"><span class="bar">|</span>${md(it.tech)}</span>` : '';
+  const bullets = (it.bullets||[]).filter(b=>b.on && b.t.trim());
+  return `<div class="e-row"><div class="e-left">${title}${note}${tech}</div>${it.date?`<div class="e-date">${md(it.date)}</div>`:''}</div>`
+    + (it.subtitle||it.place?`<div class="e-row e-row2"><span>${md(it.subtitle)}</span>${it.place?`<span class="e-place">${md(it.place)}</span>`:''}</div>`:'')
+    + (it.tech && !inlineTech?`<div class="e-techline">${md(it.tech)}</div>`:'')
+    + (it.detail?`<div class="e-detail">${it.detailLabel?`<span class="lbl">${esc(it.detailLabel)}</span> `:''}${md(it.detail)}</div>`:'')
+    + (bullets.length?`<ul class="e-bullets">${bullets.map(b=>`<li>${md(b.t)}</li>`).join('')}</ul>`:'');
+}
+function itemHTML(id){
+  const it = state.items[id], sec = secById(it.sec);
+  return `<div class="cv-item${ui.editing&&ui.editing.id===id?' editing':''}" data-key="item:${id}" data-item="${id}" data-drag="item:${id}" data-click="item:${id}">${itemInner(it,sec.kind)}<button class="ui ui-x" data-act="rmitem" data-id="${id}" title="Remove from CV">×</button></div>`;
+}
+function sectionHTML(sid, ids){
+  const sec = secById(sid);
+  return `<section class="cv-sec kind-${sec.kind}${ids.length?'':' is-empty'}${sec.hideHeading?' no-h':''}" data-key="sec:${sid}" data-sec="${sid}" data-title="${esc(sec.title)}">`
+    + `<div class="ui sec-grip" data-drag="sec:${sid}" title="Drag section">${GRIP}</div>`
+    + `<button class="ui ui-x sec-x" data-act="rmsec" data-id="${sid}" title="Remove section from CV">×</button>`
+    + (sec.hideHeading?'':`<div class="sec-h" data-drag="sec:${sid}" data-click="sec:${sid}">${esc(sec.title)}</div>`)
+    + `<div class="sec-body">${ids.map(itemHTML).join('')}<div class="empty-hint">Drop ${esc(sec.title)} blocks here</div></div></section>`;
+}
+function renderCV(){
+  const h = state.header;
+  const contacts = h.contacts.filter(c=>c.t).map(c=>c.u?`<a href="${esc(c.u)}">${esc(c.t)}</a>`:esc(c.t)).join('<span class="bar">|</span>');
+  inner.innerHTML = `<div class="cv-header${ui.editing&&ui.editing.kind==='header'?' editing':''}" data-key="header" data-click="header:">`
+    + `<div class="cv-name">${md(h.name)}</div>${h.location?`<div class="cv-loc">${md(h.location)}</div>`:''}${contacts?`<div class="cv-contacts">${contacts}</div>`:''}</div>`
+    + `<div id="cvSections">${state.cv.map(s=>sectionHTML(s.sec,s.items)).join('')}</div>`;
+}
+
+/* ================= auto-fit ================= */
+function fit(){
+  const avail = PAGE_H - PAD_Y;
+  page.classList.add('measuring');
+  const set = (fs,sp)=>{ page.style.setProperty('--fs',fs); page.style.setProperty('--sp',sp); };
+  const ok = ()=>inner.offsetHeight <= avail;
+  const search = (lo,hi,apply)=>{ for(let i=0;i<9;i++){ const m=(lo+hi)/2; apply(m); if(ok()) lo=m; else hi=m; } return lo; };
+  let fs=1, sp=1;
+  if (state.settings.autofit){
+    set(1,1);
+    if (ok()){ set(1,1.3); sp = ok() ? 1.3 : search(1,1.3,m=>set(1,m)); }
+    else {
+      set(1,.45);
+      if (ok()) sp = search(.45,1,m=>set(1,m));
+      else { sp=.45; set(.82,sp); fs = ok() ? search(.82,1,m=>set(m,sp)) : .82; }
+    }
+  }
+  set(fs,sp);
+  page.classList.remove('measuring');
+  const total = inner.offsetHeight, pages = Math.max(1,Math.ceil((total-.5)/avail));
+  page.style.minHeight = pages*PAGE_H+'px';
+  page.querySelector('.breaks').innerHTML = Array.from({length:pages-1},(_,i)=>`<div class="page-break" style="top:${(i+1)*PAGE_H}px"><span>Page ${i+2}</span></div>`).join('');
+  const pill = $('#fitPill');
+  pill.className = 'fit-pill '+(pages>1?'warn':'ok');
+  pill.querySelector('.ind').textContent = pages>1?'!':'✓';
+  const fsTxt = fs<.999?` · text ${Math.round(fs*100)}%`:'';
+  $('#fitText').innerHTML = pages>1
+    ? `Runs onto ${pages} pages <span class="sub">· remove a block or two</span>`
+    : `Fits on one page <span class="sub">${state.settings.autofit?`· spacing ${Math.round(sp*100)}%${fsTxt}`:'· auto-fit off'}</span>`;
+  sizeWrap();
+}
+function sizeWrap(){
+  const cs = getComputedStyle(stage);
+  const availW = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const base = clamp(availW/PAGE_W, .35, 1.25);
+  S.scale = base*state.settings.zoom;
+  page.style.transform = `scale(${S.scale})`;
+  const w = $('#pageWrap'); w.style.width = PAGE_W*S.scale+'px'; w.style.height = page.offsetHeight*S.scale+'px';
+  $('#zoomVal').textContent = Math.round(state.settings.zoom*100)+'%';
+}
+
+/* ================= FLIP animation ================= */
+function flip(mutate, dur=340){
+  const first = new Map();
+  page.querySelectorAll('[data-key]').forEach(el=>first.set(el.dataset.key, el.getBoundingClientRect()));
+  const sc0 = S.scale;
+  mutate();
+  const els = [...page.querySelectorAll('[data-key]')];
+  els.forEach(el=>el.getAnimations().forEach(a=>{ if(a.id==='flip'||a.id==='enter') a.cancel(); }));
+  const deltas = new Map();
+  els.forEach(el=>{
+    const f = first.get(el.dataset.key);
+    if(!f){ deltas.set(el,null); return; }
+    const r = el.getBoundingClientRect();
+    deltas.set(el,{x:(f.left-r.left)/S.scale, y:(f.top-r.top)/S.scale});
+  });
+  if (sc0 !== S.scale) return;
+  els.forEach(el=>{
+    const d = deltas.get(el);
+    const p = el.parentElement.closest('[data-key]');
+    const pd = p ? deltas.get(p) : null;
+    if(!d){ if(!(p && pd===null)){ const a=el.animate([{opacity:0,transform:'scale(.97)'},{}],{duration:280,easing:'ease-out'}); a.id='enter'; } return; }
+    const x = d.x-(pd?.x||0), y = d.y-(pd?.y||0);
+    if(Math.abs(x)<.5 && Math.abs(y)<.5) return;
+    const a = el.animate([{transform:`translate(${x}px,${y}px)`},{transform:'none'}],{duration:dur,easing:'cubic-bezier(.2,.9,.25,1)'});
+    a.id='flip';
+  });
+}
+
+/* ================= rendering: library ================= */
+function libCard(id){
+  const it = state.items[id], sec = secById(it.sec), p = isPlaced(id);
+  let title, meta;
+  if (sec.kind==='text'){ title = 'Paragraph'; meta = it.text; }
+  else if (sec.kind==='skills'){ title = it.title||'Untitled group'; meta = it.text; }
+  else { title = it.title||'Untitled block'; meta = [it.subtitle,it.date].filter(Boolean).join(' · ') || it.tech || (it.bullets?.[0]?.t ?? ''); }
+  const ed = ui.editing && ui.editing.id===id ? ' editing':'';
+  return `<div class="lib-card${p?' placed':''}${ed}" data-drag="item:${id}" data-click="item:${id}" data-libitem="${id}"><div class="lc-title">${md(title)}</div>${meta?`<div class="lc-meta">${md(meta)}</div>`:''}<button class="lc-badge" data-act="toggle" data-id="${id}">${p?'✓ On CV':'+ Add'}</button></div>`;
+}
+function renderLibrary(){
+  let h='', total=0, placed=0;
+  for (const s of state.sections){
+    const ids = state.libOrder[s.id]||[]; const pc = ids.filter(isPlaced).length; total+=ids.length; placed+=pc;
+    h += `<div class="lib-sec${ui.collapsed[s.id]?' collapsed':''}${cvSec(s.id)?' on-cv':''}" style="--c:${s.color}" data-libsec="${s.id}">
+      <div class="lib-sec-head" data-drag="sec:${s.id}" data-act="collapse" data-id="${s.id}" title="Drag onto the page to add the whole section">
+        <span class="grip">${GRIP}</span><span class="dot"></span><span class="ls-name">${esc(s.title)}</span>
+        <span class="ls-count">${pc}/${ids.length}</span>
+        <button class="mini" data-act="additem" data-id="${s.id}" title="New block">+</button>
+        <button class="mini" data-act="editsec" data-id="${s.id}" title="Edit section">✎</button>
+        <span class="chev">${CHEV}</span>
+      </div>
+      <div class="lib-items-wrap"><div class="lib-items"><div class="lib-items-inner">${ids.map(libCard).join('')||'<div class="lib-empty">No blocks yet — hit +</div>'}</div></div></div>
+    </div>`;
+  }
+  h += `<button class="lib-new" data-act="newsec">+ New section</button>`;
+  libList.innerHTML = h;
+  $('#libCount').textContent = `${placed} of ${total} on CV`;
+}
+
+function renderAll(animate=true){
+  const m = ()=>{ renderCV(); fit(); };
+  animate ? flip(m) : m();
+  renderLibrary();
+  save();
+}
+function pulse(key){
+  const el = page.querySelector(`[data-key="${key}"]`);
+  if(!el) return;
+  el.classList.remove('snapped'); void el.offsetWidth; el.classList.add('snapped');
+  setTimeout(()=>el.classList.remove('snapped'),700);
+}
+
+/* ================= drag & drop engine ================= */
+let pend=null, drag=null, suppressClick=false;
+document.addEventListener('pointerdown', e=>{
+  if (e.button!==0 || drag) return;
+  if (e.target.closest('button,input,textarea,select,label')) return;
+  const h = e.target.closest('[data-drag]');
+  if (!h) return;
+  e.preventDefault();
+  pend = {h, x:e.clientX, y:e.clientY};
+});
+document.addEventListener('pointermove', e=>{
+  if (pend && !drag && Math.hypot(e.clientX-pend.x, e.clientY-pend.y) > 5) startDrag(pend, e);
+  if (drag) moveDrag(e);
+});
+document.addEventListener('pointerup', ()=>{
+  if (drag){ endDrag(); suppressClick=true; setTimeout(()=>suppressClick=false,0); }
+  pend=null;
+});
+window.addEventListener('blur', ()=>{ if(drag) endDrag(true); pend=null; });
+
+function startDrag(p, e){
+  pend = null;
+  const [type,id] = p.h.dataset.drag.split(':');
+  const inPage = !!p.h.closest('#page');
+  const visual = inPage ? p.h.closest('[data-key]') : (p.h.closest('.lib-card') || p.h.closest('.lib-sec-head'));
+  const r = visual.getBoundingClientRect(), sc = inPage ? S.scale : 1;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'drag-clone ' + (inPage ? 'cv cv-clone' : 'lib-clone');
+  if (inPage){
+    wrap.style.setProperty('--fs', page.style.getPropertyValue('--fs')||1);
+    wrap.style.setProperty('--sp', page.style.getPropertyValue('--sp')||1);
+    wrap.style.width = visual.offsetWidth+'px';
+  } else {
+    wrap.style.width = r.width+'px';
+    const ls = visual.closest('.lib-sec'); if (ls) wrap.style.setProperty('--c', ls.style.getPropertyValue('--c'));
+  }
+  const c = visual.cloneNode(true);
+  c.removeAttribute('data-key'); c.querySelectorAll('[data-key]').forEach(x=>x.removeAttribute('data-key'));
+  c.classList.remove('editing','snapped');
+  wrap.appendChild(c); document.body.appendChild(wrap);
+  const ox = (p.x-r.left)/sc, oy = (p.y-r.top)/sc;
+  wrap.style.transformOrigin = `${ox}px ${oy}px`;
+  wrap.style.left = (p.x-ox)+'px'; wrap.style.top = (p.y-oy)+'px';
+  wrap.style.transform = `scale(${sc})`;
+  requestAnimationFrame(()=>wrap.classList.add('lifted'));
+
+  // Decide what the ghost (live preview on the page) is.
+  const secId = type==='sec' ? id : state.items[id].sec;
+  const existing = type==='item' ? page.querySelector(`.cv-item[data-item="${id}"]`) : page.querySelector(`.cv-sec[data-sec="${id}"]`);
+  let ghost, gmode;
+  if (existing){ ghost = existing; gmode = type==='item' ? 'item' : 'section'; }
+  else if (type==='item' && cvSec(secId)){ ghost = htmlToEl(itemHTML(id)); gmode='item'; }
+  else if (type==='item'){ ghost = htmlToEl(sectionHTML(secId,[id])); gmode='section'; }
+  else { ghost = htmlToEl(sectionHTML(id, state.libOrder[id]||[])); gmode='section'; }
+  ghost.classList.add('ghost'); ghost.classList.remove('editing');
+
+  drag = {type,id,secId,wrap,ox,oy,sc,ghost,gmode,existed:!!existing,fromLib:!inPage,visual,srcRect:r,
+          mode: existing?'place':'none', lastX:p.x, tilt:0, x:e.clientX, y:e.clientY};
+  if (!inPage) visual.classList.add('lifting');
+  document.body.classList.add('is-dragging');
+  if (existing) document.body.classList.add('drag-from-cv');
+  if (gmode==='item') page.querySelector(`.cv-sec[data-sec="${secId}"]`)?.classList.add('drop-ok');
+  else page.classList.add('drop-page');
+  sfx.pick();
+  requestAnimationFrame(autoScroll);
+}
+
+function moveDrag(e){
+  const d = drag;
+  d.x = e.clientX; d.y = e.clientY;
+  const vx = e.clientX - d.lastX; d.lastX = e.clientX;
+  d.tilt = d.tilt*.6 + clamp(vx*.45,-7,7)*.4;
+  d.wrap.style.left = (e.clientX-d.ox)+'px';
+  d.wrap.style.top = (e.clientY-d.oy)+'px';
+  d.wrap.style.transform = `scale(${(d.sc*1.035).toFixed(4)}) rotate(${(-1.2+d.tilt).toFixed(2)}deg)`;
+  updateTarget();
+}
+
+function lrect(el){ let t=0,l=0,n=el; while(n && n!==page){ t+=n.offsetTop; l+=n.offsetLeft; n=n.offsetParent; } return {top:t,left:l,w:el.offsetWidth,h:el.offsetHeight}; }
+function beforeV(kids,y){ for(const c of kids){ const r=lrect(c); if(y < r.top + r.h/2) return c; } return null; }
+function before2D(kids,x,y){ for(const c of kids){ const r=lrect(c); if(y < r.top) return c; if(y < r.top+r.h && x < r.left + r.w/2) return c; } return null; }
+
+function updateTarget(){
+  const d = drag, {x,y} = d;
+  const lr = library.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  const inLib = x>=lr.left && x<lr.right && y>=lr.top && y<=lr.bottom;
+  const er = editor.classList.contains('open') ? editor.getBoundingClientRect() : null;
+  const inStage = x>=sr.left && x<=sr.right && y>=sr.top && y<=sr.bottom && !(er && x>=er.left && y>=er.top && y<=er.bottom);
+  if (inLib){
+    if (d.ghost.isConnected) flip(()=>d.ghost.remove());
+    d.mode = d.existed ? 'remove' : 'none';
+    $('#removeZone').classList.toggle('show', d.existed);
+    return;
+  }
+  $('#removeZone').classList.remove('show');
+  if (!inStage) return;
+  const pr = page.getBoundingClientRect();
+  const lx = (x-pr.left)/S.scale, ly = (y-pr.top)/S.scale;
+  let parent, ref;
+  if (d.gmode==='item'){
+    const sec = page.querySelector(`.cv-sec[data-sec="${d.secId}"]`);
+    parent = sec.querySelector('.sec-body');
+    const kids = [...parent.children].filter(c=>c.classList.contains('cv-item') && c!==d.ghost);
+    ref = (getComputedStyle(parent).display==='flex' ? before2D(kids,lx,ly) : beforeV(kids,ly)) || parent.querySelector(':scope > .empty-hint');
+  } else {
+    parent = page.querySelector('#cvSections');
+    const kids = [...parent.children].filter(c=>c!==d.ghost);
+    ref = beforeV(kids, ly);
+  }
+  d.mode = 'place';
+  if (d.ghost.parentNode===parent && d.ghost.nextElementSibling===ref) return;
+  flip(()=>parent.insertBefore(d.ghost, ref), 300);
+  sfx.tick();
+}
+
+function autoScroll(){
+  if (!drag) return;
+  const r = stage.getBoundingClientRect(), d = drag;
+  let v = 0;
+  if (d.x>r.left && d.x<r.right){
+    if (d.y < r.top+80) v = -Math.pow((r.top+80-d.y)/80,2)*22;
+    else if (d.y > r.bottom-80) v = Math.pow((d.y-(r.bottom-80))/80,2)*22;
+  }
+  if (v){ const before = stage.scrollTop; stage.scrollTop += v; if (stage.scrollTop!==before) updateTarget(); }
+  requestAnimationFrame(autoScroll);
+}
+
+function endDrag(cancel=false){
+  const d = drag; drag = null;
+  document.body.classList.remove('is-dragging','drag-from-cv');
+  $('#removeZone').classList.remove('show');
+  page.classList.remove('drop-page');
+  page.querySelectorAll('.drop-ok').forEach(el=>el.classList.remove('drop-ok'));
+  d.visual.classList.remove('lifting');
+  const w = d.wrap;
+  if (!cancel && d.mode==='place' && d.ghost.isConnected){
+    const g = d.ghost, gr = g.getBoundingClientRect();
+    pushHistory();
+    let key;
+    if (d.gmode==='item'){
+      const idx = [...g.parentElement.children].filter(c=>c.classList.contains('cv-item')).indexOf(g);
+      removeItemFromCV(d.id);
+      cvSec(d.secId).items.splice(idx,0,d.id);
+      key = 'item:'+d.id;
+    } else {
+      const idx = [...g.parentElement.children].indexOf(g);
+      const prev = cvSec(d.secId);
+      const items = d.type==='sec' ? (prev ? prev.items : [...(state.libOrder[d.id]||[])]) : [d.id];
+      if (d.type==='item') removeItemFromCV(d.id);
+      state.cv = state.cv.filter(s=>s.sec!==d.secId);
+      state.cv.splice(idx,0,{sec:d.secId,items});
+      key = d.type==='sec' ? 'sec:'+d.secId : 'item:'+d.id;
+    }
+    // Fly the floating copy into its slot, then settle.
+    const s = S.scale;
+    w.classList.add('flying');
+    if (d.fromLib){
+      w.style.left = gr.left+'px'; w.style.top = gr.top+'px';
+      w.style.transformOrigin = '0 0';
+      w.style.transform = `scale(${Math.min(1, gr.width/w.offsetWidth)})`;
+    } else {
+      w.style.left = (gr.left - d.ox + d.ox*s)+'px'; w.style.top = (gr.top - d.oy + d.oy*s)+'px';
+      w.style.transform = `scale(${s})`;
+    }
+    w.style.opacity = '0';
+    renderAll(true);
+    sfx.snap();
+    pulse(key);
+    if (ui.editing) markEditing();
+    setTimeout(()=>w.remove(), 340);
+  } else if (!cancel && d.mode==='remove'){
+    pushHistory();
+    if (d.type==='item') removeItemFromCV(d.id); else state.cv = state.cv.filter(s=>s.sec!==d.id);
+    w.classList.add('poof');
+    w.style.transform = `scale(${d.sc*.55}) rotate(${-6+d.tilt}deg)`;
+    renderAll(true);
+    sfx.remove();
+    const card = d.type==='item' && libList.querySelector(`[data-libitem="${d.id}"]`);
+    if (card){ card.classList.add('flash'); }
+    setTimeout(()=>w.remove(), 260);
+  } else {
+    if (d.ghost.isConnected && !d.existed) flip(()=>d.ghost.remove());
+    d.ghost.classList.remove('ghost');
+    w.classList.add('returning');
+    const r = d.srcRect;
+    w.style.left = (r.left - d.ox + d.ox*d.sc)+'px'; w.style.top = (r.top - d.oy + d.oy*d.sc)+'px';
+    w.style.transform = `scale(${d.sc})`; w.style.opacity = '0';
+    setTimeout(()=>w.remove(), 360);
+    if (d.existed) renderAll(true);
+  }
+}
+
+/* ================= quick actions ================= */
+function addToCV(id){
+  pushHistory();
+  const sid = state.items[id].sec;
+  let s = cvSec(sid);
+  if (!s){
+    // Insert the section at its library position relative to the sections already on the CV.
+    const order = state.sections.map(x=>x.id);
+    const pos = state.cv.findIndex(c=>order.indexOf(c.sec) > order.indexOf(sid));
+    s = {sec:sid,items:[]};
+    pos<0 ? state.cv.push(s) : state.cv.splice(pos,0,s);
+  }
+  const lib = state.libOrder[sid];
+  const myIdx = lib.indexOf(id);
+  const at = s.items.findIndex(x=>lib.indexOf(x) > myIdx);
+  at<0 ? s.items.push(id) : s.items.splice(at,0,id);
+  renderAll(true); sfx.snap(); pulse('item:'+id);
+}
+function removeFromCV(id){ pushHistory(); removeItemFromCV(id); renderAll(true); sfx.remove(); }
+
+function newItem(sid){
+  const sec = secById(sid), id = sid+'-'+uid();
+  const base = sec.kind==='skills' ? {title:'New group',text:''} : sec.kind==='text' ? {text:''} : {title:'New entry',subtitle:'',date:'',bullets:[{t:'',on:true}]};
+  pushHistory();
+  state.items[id] = {id,sec:sid,...base};
+  (state.libOrder[sid] ||= []).push(id);
+  ui.collapsed[sid] = false;
+  renderAll(false);
+  openEditor('item',id);
+  libList.querySelector(`[data-libitem="${id}"]`)?.classList.add('flash');
+  sfx.pop();
+}
+
+/* ================= editor ================= */
+function editingExists(){ const e=ui.editing; if(!e) return false; if(e.kind==='item') return !!state.items[e.id]; if(e.kind==='sec') return !!secById(e.id); return true; }
+function openEditor(kind,id){
+  ui.editing = {kind,id};
+  buildEditor();
+  editor.classList.add('open'); mainEl.classList.add('editor-open');
+  markEditing();
+  setTimeout(()=>{ sizeWrap(); scrollToEditing(); }, 340);
+  requestAnimationFrame(sizeWrap);
+}
+function closeEditor(){
+  ui.editing = null;
+  editor.classList.remove('open'); mainEl.classList.remove('editor-open');
+  markEditing();
+  setTimeout(sizeWrap, 340); requestAnimationFrame(sizeWrap);
+}
+function markEditing(){
+  document.querySelectorAll('.editing').forEach(el=>el.classList.remove('editing'));
+  const e = ui.editing; if(!e) return;
+  if (e.kind==='item'){ page.querySelector(`[data-item="${e.id}"]`)?.classList.add('editing'); libList.querySelector(`[data-libitem="${e.id}"]`)?.classList.add('editing'); }
+  if (e.kind==='header') page.querySelector('.cv-header')?.classList.add('editing');
+}
+function scrollToEditing(){
+  const el = page.querySelector('.editing'); if(!el) return;
+  const r = el.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+  if (r.top < sr.top+40 || r.bottom > sr.bottom-60) stage.scrollBy({top: r.top - sr.top - 120, behavior:'smooth'});
+}
+
+const fld = (f,label,val,opts={})=>{
+  const ph = opts.ph?` placeholder="${esc(opts.ph)}"`:'';
+  const lab = `<label>${label}${opts.hint?` <em>${opts.hint}</em>`:''}</label>`;
+  return opts.area
+    ? `<div class="fld">${lab}<textarea data-f="${f}" rows="${opts.rows||2}"${ph}>${esc(val)}</textarea></div>`
+    : `<div class="fld">${lab}<input type="text" data-f="${f}" value="${esc(val)}"${ph}></div>`;
+};
+
+function buildEditor(){
+  const e = ui.editing; if(!e) return;
+  let chip='', color='#667eea', title='', body='', foot='';
+  if (e.kind==='item'){
+    const it = state.items[e.id], sec = secById(it.sec); color = sec.color; chip = sec.title;
+    const placed = isPlaced(e.id);
+    title = 'Edit block';
+    if (sec.kind==='skills'){
+      body = fld('title','Group name',it.title) + fld('text','Items',it.text,{area:true,rows:3,hint:'comma separated'});
+    } else if (sec.kind==='text'){
+      body = fld('text','Paragraph',it.text,{area:true,rows:6});
+    } else {
+      body = fld('title','Title',it.title)
+        + fld('note','Title note',it.note,{ph:'e.g. GPA 3.8',hint:'optional'})
+        + fld('subtitle','Organisation / degree',it.subtitle,{hint:'italic, under the title'})
+        + fld('place','Location',it.place,{ph:'City, Country',hint:'right side'})
+        + fld('date','Date',it.date,{ph:'Jun 2026 - Aug 2026'})
+        + fld('link','Link',it.link,{ph:'https://github.com/…',hint:'adds 🔗 icon'})
+        + fld('tech','Tech / tools',it.tech,{ph:'Python, React, Docker',hint:'next to the title for projects'})
+        + `<div class="fld"><label>Detail line <em>optional</em></label><div class="row2"><input type="text" data-f="detailLabel" value="${esc(it.detailLabel)}" placeholder="Classes:"><textarea data-f="detail" rows="2" placeholder="Course A, Course B…">${esc(it.detail)}</textarea></div></div>`
+        + `<span class="ed-label">Bullet points <em style="font-style:normal;color:var(--faint);font-weight:500">— untick to hide for this version</em></span><div class="b-list">`
+        + (it.bullets||[]).map((b,i)=>`<div class="b-row${b.on?'':' off'}"><input type="checkbox" class="chk" data-bv="${i}"${b.on?' checked':''}><textarea data-b="${i}" rows="2" placeholder="Achievement, with a number if you can…">${esc(b.t)}</textarea><div class="b-tools"><button class="mini" data-act="b-up" data-i="${i}" title="Move up">▲</button><button class="mini" data-act="b-down" data-i="${i}" title="Move down">▼</button><button class="mini" data-act="b-del" data-i="${i}" title="Delete">×</button></div></div>`).join('')
+        + `</div><button class="addline" data-act="b-add">+ Add bullet</button>`;
+    }
+    body += `<p class="hint">Wrap text in <code>**double stars**</code> to make it bold.</p>`;
+    foot = `<button class="btn ${placed?'':'primary'}" data-act="ed-toggle">${placed?'Remove from CV':'Add to CV'}</button><span class="grow"></span><button class="btn" data-act="ed-dup" title="Make a variant of this block">Duplicate</button><button class="btn danger" data-act="ed-del">Delete</button>`;
+  } else if (e.kind==='sec'){
+    const sec = secById(e.id); color = sec.color; chip = 'Section'; title = 'Edit section';
+    body = fld('stitle','Section title',sec.title)
+      + `<label class="checkline"><input type="checkbox" class="chk" data-sf="hideHeading"${sec.hideHeading?' checked':''}> Hide heading on the CV</label>`;
+    foot = `<button class="btn" data-act="additem" data-id="${sec.id}">+ New block</button><span class="grow"></span><button class="btn danger" data-act="sec-del">Delete section</button>`;
+  } else if (e.kind==='header'){
+    const h = state.header; chip = 'Header'; title = 'Edit header';
+    body = fld('h-name','Name',h.name) + fld('h-location','Location',h.location)
+      + `<span class="ed-label">Contact line</span>` + h.contacts.map((c,i)=>`<div class="ct-row"><input type="text" data-ct="${i}" data-cf="t" value="${esc(c.t)}" placeholder="Text"><input type="text" data-ct="${i}" data-cf="u" value="${esc(c.u)}" placeholder="Link (optional)"><button class="mini" data-act="ct-del" data-i="${i}">×</button></div>`).join('')
+      + `<button class="addline" data-act="ct-add">+ Add contact</button>`;
+    foot = `<span class="grow"></span><button class="btn" data-act="ed-close">Done</button>`;
+  } else if (e.kind==='newsec'){
+    chip = 'New'; title = 'New section';
+    body = `<div class="fld"><label>Section title</label><input type="text" id="ns-title" placeholder="e.g. Leadership, Awards, Publications"></div>
+      <div class="fld"><label>Block style</label><select id="ns-kind"><option value="entries">Entries — title, date, bullets (like Work Experience)</option><option value="skills">Groups — label + list (like Skills)</option><option value="text">Paragraph — free text (like a summary)</option></select></div>`;
+    foot = `<span class="grow"></span><button class="btn" data-act="ed-close">Cancel</button><button class="btn primary" data-act="sec-create">Create section</button>`;
+  }
+  editor.style.setProperty('--c',color);
+  editor.innerHTML = `<div class="ed-head"><span class="ed-chip">${esc(chip)}</span><h3>${title}</h3><button class="mini" data-act="ed-close" title="Close (Esc)">✕</button></div><div class="ed-body">${body}</div><div class="ed-foot">${foot}</div>`;
+  editor.querySelectorAll('textarea').forEach(autosize);
+}
+function autosize(t){ t.style.height='auto'; t.style.height=(t.scrollHeight+2)+'px'; }
+
+let typingPushed = false, liveT = 0;
+editor.addEventListener('focusin', ()=>{ typingPushed = false; });
+function live(){ cancelAnimationFrame(liveT); liveT = requestAnimationFrame(()=>{ renderCV(); fit(); markEditing(); renderLibrary(); markEditing(); save(); }); }
+editor.addEventListener('input', ev=>{
+  const t = ev.target, e = ui.editing; if(!e) return;
+  if (t.tagName==='TEXTAREA') autosize(t);
+  if (e.kind==='newsec') return;
+  if (!typingPushed || t.type==='checkbox'){ pushHistory(); typingPushed = t.type!=='checkbox'; }
+  if (e.kind==='item'){
+    const it = state.items[e.id];
+    if (t.dataset.f) it[t.dataset.f] = t.value;
+    else if (t.dataset.b!=null) it.bullets[+t.dataset.b].t = t.value;
+    else if (t.dataset.bv!=null){ it.bullets[+t.dataset.bv].on = t.checked; t.closest('.b-row').classList.toggle('off',!t.checked); sfx.click(); typingPushed=false; }
+  } else if (e.kind==='sec'){
+    const sec = secById(e.id);
+    if (t.dataset.f==='stitle') sec.title = t.value;
+    if (t.dataset.sf==='hideHeading'){ sec.hideHeading = t.checked; sfx.click(); typingPushed=false; }
+  } else if (e.kind==='header'){
+    const h = state.header;
+    if (t.dataset.f==='h-name') h.name = t.value;
+    if (t.dataset.f==='h-location') h.location = t.value;
+    if (t.dataset.ct!=null) h.contacts[+t.dataset.ct][t.dataset.cf] = t.value;
+  }
+  live();
+});
+
+/* ================= click actions ================= */
+const act = {
+  rmitem: el=>removeFromCV(el.dataset.id),
+  rmsec: el=>{ pushHistory(); state.cv = state.cv.filter(s=>s.sec!==el.dataset.id); renderAll(true); sfx.remove(); },
+  toggle: el=>{ const id=el.dataset.id; isPlaced(id) ? removeFromCV(id) : addToCV(id); },
+  collapse: el=>{ const id=el.dataset.id; ui.collapsed[id]=!ui.collapsed[id]; libList.querySelector(`[data-libsec="${id}"]`).classList.toggle('collapsed',ui.collapsed[id]); sfx.click(); },
+  additem: el=>newItem(el.dataset.id),
+  editsec: el=>{ openEditor('sec',el.dataset.id); sfx.click(); },
+  newsec: ()=>{ openEditor('newsec'); setTimeout(()=>$('#ns-title')?.focus(),50); sfx.click(); },
+  'sec-create': ()=>{
+    const title = $('#ns-title').value.trim() || 'New Section', kind = $('#ns-kind').value;
+    pushHistory();
+    const id = 's-'+uid();
+    state.sections.push({id,title,kind,color:PALETTE[state.sections.length % PALETTE.length],hideHeading:false});
+    state.libOrder[id] = [];
+    renderAll(false); sfx.pop();
+    newItem(id);
+  },
+  'sec-color': el=>{ pushHistory(); secById(ui.editing.id).color = el.dataset.c; buildEditor(); renderAll(false); sfx.click(); },
+  'sec-del': ()=>{
+    const sec = secById(ui.editing.id), n = (state.libOrder[sec.id]||[]).length;
+    if (!confirm(`Delete the "${sec.title}" section${n?` and its ${n} block${n>1?'s':''}`:''}? You can undo this.`)) return;
+    pushHistory();
+    (state.libOrder[sec.id]||[]).forEach(id=>delete state.items[id]);
+    delete state.libOrder[sec.id];
+    state.sections = state.sections.filter(s=>s.id!==sec.id);
+    state.cv = state.cv.filter(s=>s.sec!==sec.id);
+    closeEditor(); renderAll(true); sfx.remove();
+  },
+  'ed-close': ()=>{ closeEditor(); sfx.click(); },
+  'ed-toggle': ()=>{ const id=ui.editing.id; isPlaced(id)?removeFromCV(id):addToCV(id); buildEditor(); markEditing(); },
+  'ed-dup': ()=>{
+    const src = state.items[ui.editing.id], id = src.sec+'-'+uid();
+    pushHistory();
+    state.items[id] = JSON.parse(JSON.stringify({...src,id}));
+    const lo = state.libOrder[src.sec]; lo.splice(lo.indexOf(src.id)+1,0,id);
+    renderAll(false); openEditor('item',id);
+    libList.querySelector(`[data-libitem="${id}"]`)?.classList.add('flash');
+    toast('Duplicated — edit this variant freely'); sfx.pop();
+  },
+  'ed-del': ()=>{
+    const it = state.items[ui.editing.id];
+    if (!confirm(`Delete "${it.title || 'this block'}" from your library? You can undo this.`)) return;
+    pushHistory();
+    removeItemFromCV(it.id);
+    state.libOrder[it.sec] = state.libOrder[it.sec].filter(x=>x!==it.id);
+    delete state.items[it.id];
+    closeEditor(); renderAll(true); sfx.remove();
+  },
+  'b-add': ()=>{ pushHistory(); const it=state.items[ui.editing.id]; (it.bullets ||= []).push({t:'',on:true}); buildEditor(); live(); const ts=editor.querySelectorAll('[data-b]'); ts[ts.length-1]?.focus(); sfx.pop(); },
+  'b-del': el=>{ pushHistory(); state.items[ui.editing.id].bullets.splice(+el.dataset.i,1); buildEditor(); live(); sfx.click(); },
+  'b-up': el=>moveBullet(+el.dataset.i,-1),
+  'b-down': el=>moveBullet(+el.dataset.i,1),
+  'ct-add': ()=>{ pushHistory(); state.header.contacts.push({t:'',u:''}); buildEditor(); live(); sfx.pop(); },
+  'ct-del': el=>{ pushHistory(); state.header.contacts.splice(+el.dataset.i,1); buildEditor(); live(); sfx.click(); },
+  undo, redo,
+  versions: el=>{ renderVersions(); togglePop('#verPop',el); },
+  more: el=>togglePop('#morePop',el),
+  autofit: ()=>{ state.settings.autofit=!state.settings.autofit; syncChrome(); renderAll(true); sfx.click(); },
+  sound: ()=>{ state.settings.sound=!state.settings.sound; syncChrome(); save(); sfx.click(); },
+  zoomin: ()=>{ state.settings.zoom=clamp(+(state.settings.zoom+.1).toFixed(2),.5,2); sizeWrap(); save(); sfx.click(); },
+  zoomout: ()=>{ state.settings.zoom=clamp(+(state.settings.zoom-.1).toFixed(2),.5,2); sizeWrap(); save(); sfx.click(); },
+  export: exportPDF,
+  'ver-save': ()=>{
+    const inp = $('#verName'), name = inp.value.trim(); if(!name){ inp.focus(); return; }
+    state.versions[name] = {cv:JSON.parse(JSON.stringify(state.cv)), saved:Date.now()};
+    save(); renderVersions(); toast(`Saved version “${name}”`); sfx.snap();
+  },
+  'ver-load': el=>{
+    const v = state.versions[el.dataset.name]; if(!v) return;
+    pushHistory();
+    state.cv = JSON.parse(JSON.stringify(v.cv)).filter(s=>secById(s.sec)).map(s=>({sec:s.sec,items:s.items.filter(id=>state.items[id])}));
+    closePops(); renderAll(true); sfx.snap(); toast(`Loaded “${el.dataset.name}”`);
+  },
+  'ver-del': el=>{ delete state.versions[el.dataset.name]; save(); renderVersions(); sfx.remove(); },
+  backup: ()=>{
+    const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cv-blocks-backup.json'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000); closePops();
+  },
+  restore: ()=>{ $('#restoreFile').click(); closePops(); },
+  blank: ()=>{
+    if (!confirm('Start a blank CV? Every block in your library will be cleared (you can undo this, and saved versions are kept).')) return;
+    pushHistory();
+    state.header = {name:'YOUR NAME',location:'City, Country',contacts:[{t:'you@email.com',u:''},{t:'+00 000 000 0000',u:''},{t:'linkedin.com/in/you',u:''}]};
+    state.items = {};
+    state.sections.forEach(s=>state.libOrder[s.id]=[]);
+    state.cv = state.sections.filter(s=>s.kind!=='text').map(s=>({sec:s.id,items:[]}));
+    closeEditor(); closePops(); renderAll(true); sfx.snap(); toast('Blank CV ready — click + on a section to add blocks');
+  },
+  reset: ()=>{
+    if (!confirm('Reset everything to the starter template? Your library will be replaced (saved versions are kept, and you can undo this).')) return;
+    pushHistory(); const v = state.versions; state = Object.assign(defaults(),{versions:v}); closeEditor(); closePops(); syncChrome(); renderAll(true); sfx.snap();
+  }
+};
+function moveBullet(i,dir){
+  const b = state.items[ui.editing.id].bullets, j = i+dir; if(j<0||j>=b.length) return;
+  pushHistory(); [b[i],b[j]] = [b[j],b[i]]; buildEditor(); live(); sfx.tick();
+}
+
+document.addEventListener('click', e=>{
+  if (e.target.closest('#page a')) e.preventDefault();
+  if (suppressClick) return;
+  if (!e.target.closest('.popover,#verBtn,#moreBtn')) closePops();
+  const a = e.target.closest('[data-act]');
+  if (a && act[a.dataset.act]){ act[a.dataset.act](a,e); return; }
+  const c = e.target.closest('[data-click]');
+  if (c){ const [k,id] = c.dataset.click.split(':'); openEditor(k==='header'?'header':k, id); sfx.click(); }
+});
+document.addEventListener('keydown', e=>{
+  const typing = e.target.closest('input,textarea,select');
+  const mod = e.metaKey||e.ctrlKey;
+  if (mod && e.key.toLowerCase()==='p'){ e.preventDefault(); exportPDF(); return; }
+  if (mod && e.key.toLowerCase()==='z' && !typing){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
+  if (mod && e.key.toLowerCase()==='y' && !typing){ e.preventDefault(); redo(); return; }
+  if (e.key==='Escape'){ if(drag) endDrag(true); else if($('.popover.open')) closePops(); else if(ui.editing) closeEditor(); }
+  if (e.key==='Enter' && e.target.id==='verName') act['ver-save']();
+  if (e.key==='Enter' && e.target.id==='ns-title') act['sec-create']();
+});
+$('#restoreFile').addEventListener('change', async ev=>{
+  const f = ev.target.files[0]; if(!f) return;
+  try{ const s = JSON.parse(await f.text()); if(!s.sections||!s.items) throw 0; pushHistory(); state = s; state.versions ||= {}; state.settings ||= {autofit:true,sound:true,zoom:1}; closeEditor(); syncChrome(); renderAll(true); toast('Backup restored'); }
+  catch(_){ toast('That file is not a CV Blocks backup'); }
+  ev.target.value='';
+});
+
+/* ================= chrome ================= */
+function togglePop(sel,trigger){
+  const p=$(sel), open=!p.classList.contains('open'); closePops();
+  if(!open) return;
+  const r=(trigger.closest('.tgroup')||trigger).getBoundingClientRect();
+  p.style.right=Math.max(12,innerWidth-r.right)+'px'; p.style.top=(r.bottom+8)+'px';
+  p.classList.add('open'); sfx.click();
+}
+function closePops(){ document.querySelectorAll('.popover.open').forEach(p=>p.classList.remove('open')); }
+function renderVersions(){
+  const names = Object.keys(state.versions).sort((a,b)=>state.versions[b].saved-state.versions[a].saved);
+  $('#verPop').innerHTML = `<div class="pop-title">Saved versions</div>`
+    + (names.length ? names.map(n=>`<button class="pop-item" data-act="ver-load" data-name="${esc(n)}">${esc(n)}<span class="x" data-act="ver-del" data-name="${esc(n)}" title="Delete">×</span></button>`).join('') : `<div class="pop-empty">Save the current arrangement of blocks — e.g. “Embedded roles”, “Product / startups” — and switch back any time.</div>`)
+    + `<div class="pop-row"><input type="text" id="verName" placeholder="Name this version"><button class="btn primary" data-act="ver-save">Save</button></div>`;
+}
+function syncChrome(){
+  $('#fitSwitch').classList.toggle('on', state.settings.autofit);
+  $('#soundBtn').innerHTML = state.settings.sound ? SOUND_ON : SOUND_OFF;
+}
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+async function exportPDF(){
+  closePops();
+  const name = (state.header.name||'CV').replace(/\*\*/g,'').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+  document.title = name;
+  if (window.cvApp){
+    try{ const out = await window.cvApp.exportPDF(name); if(out){ toast('PDF saved'); sfx.snap(); } }
+    catch(e){ toast('Could not save the PDF'); }
+    return;
+  }
+  toast('Choose “Save as PDF” in the print dialog');
+  setTimeout(()=>window.print(), 250);
+}
+
+if (window.cvApp) document.body.classList.add('is-app','plat-'+window.cvApp.platform);
+new ResizeObserver(()=>sizeWrap()).observe(stage);
+syncChrome(); updateUndo();
+renderAll(false);
+document.fonts?.ready.then(()=>fit());
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{
+  "name": "cv-blocks",
+  "productName": "CV Blocks",
+  "version": "1.0.0",
+  "description": "Drag-and-drop CV builder: snap blocks in and out, auto-fit to one page, export to PDF.",
+  "author": "Ali Mleahat",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.alimleahat.cvblocks",
+    "productName": "CV Blocks",
+    "files": [
+      "index.html",
+      "main.js",
+      "preload.js",
+      "fonts/**"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": null
+    },
+    "dmg": {
+      "title": "CV Blocks",
+      "artifactName": "CV-Blocks-${version}-mac-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CV Blocks",
+      "artifactName": "CV-Blocks-Setup-${version}.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "alimleahat",
+      "repo": "cv-blocks",
+      "releaseType": "draft"
+    },
+    "afterPack": "build/adhoc-sign.js"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alimleahat/cv-blocks.git"
+  }
+}

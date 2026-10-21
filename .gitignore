@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.DS_Store
+
+# personal CV data never goes in the repo
+*backup*.json
