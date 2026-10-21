@@ -260,6 +260,15 @@ input:focus,textarea:focus,select:focus{background:#fff;box-shadow:inset 0 0 0 1
 .b-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
 .b-row{display:flex;gap:7px;align-items:flex-start;padding:6px;border-radius:14px;background:rgba(255,255,255,.4);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06);transition:opacity .2s}
 .b-row.off{opacity:.45}
+.cls-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cls-list:empty{display:none}
+.cls-hint{width:100%;font-size:11px;color:var(--faint);font-weight:500}
+.cls-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;background:rgba(255,255,255,.6);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.1);font-size:11.5px;cursor:pointer;user-select:none;transition:opacity .2s,background .2s}
+.cls-chip:hover{background:#fff}
+.cls-chip.off{opacity:.45}
+.cls-chip .chk{width:15px;height:15px;margin:0}
+.cls-chip .chk:checked::after{width:4px;height:7px}
+.cls-chip b{font-weight:600}
 .b-row textarea{font-size:12.5px;padding:6px 9px}
 .chk{appearance:none;-webkit-appearance:none;width:19px;height:19px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px #c7c7cc;margin:6px 0 0;flex:none;cursor:pointer;display:grid;place-items:center;transition:all .22s var(--spring);background:#fff}
 .chk:checked{background:#1d1d1f;box-shadow:none}
@@ -512,11 +521,11 @@ function itemInner(it, kind){
   // Project style: tech sits next to the title when there is no organisation line.
   const inlineTech = it.tech && !it.subtitle;
   const tech = inlineTech ? `<span class="e-tech"><span class="bar">|</span>${md(it.tech)}</span>` : '';
-  const bullets = (it.bullets||[]).filter(b=>b.on && b.t.trim());
+  const bullets = (it.bullets||[]).filter(b=>bulletShown(it.id,b) && b.t.trim());
   return `<div class="e-row"><div class="e-left">${title}${note}${tech}</div>${it.date?`<div class="e-date">${md(it.date)}</div>`:''}</div>`
     + (it.subtitle||it.place?`<div class="e-row e-row2"><span>${md(it.subtitle)}</span>${it.place?`<span class="e-place">${md(it.place)}</span>`:''}</div>`:'')
     + (it.tech && !inlineTech?`<div class="e-techline">${md(it.tech)}</div>`:'')
-    + (it.detail?`<div class="e-detail">${it.detailLabel?`<span class="lbl">${esc(it.detailLabel)}</span> `:''}${md(it.detail)}</div>`:'')
+    + (detailText(it)?`<div class=\"e-detail\">${it.detailLabel?`<span class="lbl">${esc(it.detailLabel)}</span> `:''}${md(detailText(it))}</div>`:'')
     + (bullets.length?`<ul class="e-bullets">${bullets.map(b=>`<li>${md(b.t)}</li>`).join('')}</ul>`:'');
 }
 function itemHTML(id){
@@ -658,6 +667,45 @@ function pruneTabs(){
   syncTab();
   for (const t of state.tabs) t.cv = t.cv.filter(s=>secById(s.sec)).map(s=>({sec:s.sec, items:s.items.filter(id=>state.items[id])}));
   state.cv = activeTab().cv;
+  ensureBulletIds();
+}
+
+/* ---- per-tab ticks ----
+   Block text is shared; which bullets and classes show is remembered per tab:
+   tab.hidden[itemId] = {b:[bullet ids], c:[class keys]} */
+function tabHidden(itemId, create){
+  const t = activeTab(); t.hidden ||= {};
+  if (!t.hidden[itemId]){ if (!create) return null; t.hidden[itemId] = {b:[],c:[]}; }
+  return t.hidden[itemId];
+}
+function bulletShown(itemId, b){ const h = tabHidden(itemId); return !(h && h.b.includes(b.id)); }
+function classKey(c){ return c.replace(/\*\*/g,'').trim().toLowerCase(); }
+function splitClasses(detail){
+  const d = String(detail||'').trim(), trail = /\.$/.test(d);
+  return {parts: d.replace(/\.$/,'').split(',').map(x=>x.trim()).filter(Boolean), trail};
+}
+function classShown(itemId, part){ const h = tabHidden(itemId); return !(h && h.c.includes(classKey(part))); }
+function detailText(it){
+  if (!it.detail) return '';
+  const {parts, trail} = splitClasses(it.detail), shown = parts.filter(c=>classShown(it.id,c));
+  return shown.length ? shown.join(', ') + (trail ? '.' : '') : '';
+}
+function toggleHidden(itemId, kind, key, show){
+  const h = tabHidden(itemId, true), list = h[kind], i = list.indexOf(key);
+  if (show && i>=0) list.splice(i,1);
+  if (!show && i<0) list.push(key);
+}
+// Bullets get stable ids so ticks survive reordering; old global "on:false" becomes hidden in every tab.
+function ensureBulletIds(){
+  for (const it of Object.values(state.items)){
+    for (const b of it.bullets||[]){
+      if (!b.id) b.id = uid();
+      if ('on' in b){
+        if (b.on===false) for (const t of state.tabs){ t.hidden ||= {}; const h = t.hidden[it.id] ||= {b:[],c:[]}; if(!h.b.includes(b.id)) h.b.push(b.id); }
+        delete b.on;
+      }
+    }
+  }
 }
 function renderTabs(){
   const el = $('#tabs');
@@ -914,7 +962,7 @@ function removeFromCV(id){ pushHistory(); removeItemFromCV(id); renderAll(true);
 
 function newItem(sid){
   const sec = secById(sid), id = sid+'-'+uid();
-  const base = sec.kind==='skills' ? {title:'New group',text:''} : sec.kind==='text' ? {text:''} : {title:'New entry',subtitle:'',date:'',bullets:[{t:'',on:true}]};
+  const base = sec.kind==='skills' ? {title:'New group',text:''} : sec.kind==='text' ? {text:''} : {title:'New entry',subtitle:'',date:'',bullets:[{id:uid(),t:''}]};
   pushHistory();
   state.items[id] = {id,sec:sid,...base};
   (state.libOrder[sid] ||= []).push(id);
@@ -980,9 +1028,9 @@ function buildEditor(){
         + fld('date','Date',it.date,{ph:'Jun 2026 - Aug 2026'})
         + fld('link','Link',it.link,{ph:'https://github.com/…',hint:'adds 🔗 icon'})
         + fld('tech','Tech / tools',it.tech,{ph:'Python, React, Docker',hint:'next to the title for projects'})
-        + `<div class="fld"><label>Detail line <em>optional</em></label><div class="row2"><input type="text" data-f="detailLabel" value="${esc(it.detailLabel)}" placeholder="Classes:"><textarea data-f="detail" rows="2" placeholder="Course A, Course B…">${esc(it.detail)}</textarea></div></div>`
-        + `<span class="ed-label">Bullet points <em style="font-style:normal;color:var(--faint);font-weight:500">— untick to hide without deleting (applies in every version)</em></span><div class="b-list">`
-        + (it.bullets||[]).map((b,i)=>`<div class="b-row${b.on?'':' off'}"><input type="checkbox" class="chk" data-bv="${i}"${b.on?' checked':''}><textarea data-b="${i}" rows="2" placeholder="Achievement, with a number if you can…">${esc(b.t)}</textarea><div class="b-tools"><button class="mini" data-act="b-up" data-i="${i}" title="Move up">▲</button><button class="mini" data-act="b-down" data-i="${i}" title="Move down">▼</button><button class="mini" data-act="b-del" data-i="${i}" title="Delete">×</button></div></div>`).join('')
+        + `<div class="fld"><label>Detail line <em>optional</em></label><div class="row2"><input type="text" data-f="detailLabel" value="${esc(it.detailLabel)}" placeholder="Classes:"><textarea data-f="detail" rows="2" placeholder="Course A, Course B…">${esc(it.detail)}</textarea></div><div class="cls-list" id="clsList">${classChips(it)}</div></div>`
+        + `<span class="ed-label">Bullet points <em style="font-style:normal;color:var(--faint);font-weight:500">— ticks apply to this version only</em></span><div class="b-list">`
+        + (it.bullets||[]).map((b,i)=>`<div class="b-row${bulletShown(it.id,b)?'':' off'}"><input type="checkbox" class="chk" data-bv="${i}"${bulletShown(it.id,b)?' checked':''} title="Show in this version"><textarea data-b="${i}" rows="2" placeholder="Achievement, with a number if you can…">${esc(b.t)}</textarea><div class="b-tools"><button class="mini" data-act="b-up" data-i="${i}" title="Move up">▲</button><button class="mini" data-act="b-down" data-i="${i}" title="Move down">▼</button><button class="mini" data-act="b-del" data-i="${i}" title="Delete">×</button></div></div>`).join('')
         + `</div><button class="addline" data-act="b-add">+ Add bullet</button>`;
     }
     body += `<p class="hint">Wrap text in <code>**double stars**</code> to make it bold.</p>`;
@@ -1008,6 +1056,11 @@ function buildEditor(){
   editor.innerHTML = `<div class="ed-head"><span class="ed-chip">${esc(chip)}</span><h3>${title}</h3><button class="mini" data-act="ed-close" title="Close (Esc)">✕</button></div><div class="ed-body">${body}</div><div class="ed-foot">${foot}</div>`;
   editor.querySelectorAll('textarea').forEach(autosize);
 }
+function classChips(it){
+  const {parts} = splitClasses(it.detail);
+  if (parts.length < 2) return '';
+  return `<span class="cls-hint">Shown in this version</span>` + parts.map(c=>{ const on = classShown(it.id,c); return `<label class="cls-chip${on?'':' off'}"><input type="checkbox" class="chk" data-cls="${esc(classKey(c))}"${on?' checked':''}>${md(c)}</label>`; }).join('');
+}
 function autosize(t){ t.style.height='auto'; t.style.height=(t.scrollHeight+2)+'px'; }
 
 let typingPushed = false, liveT = 0;
@@ -1022,7 +1075,9 @@ editor.addEventListener('input', ev=>{
     const it = state.items[e.id];
     if (t.dataset.f) it[t.dataset.f] = t.value;
     else if (t.dataset.b!=null) it.bullets[+t.dataset.b].t = t.value;
-    else if (t.dataset.bv!=null){ it.bullets[+t.dataset.bv].on = t.checked; t.closest('.b-row').classList.toggle('off',!t.checked); sfx.click(); typingPushed=false; }
+    else if (t.dataset.bv!=null){ toggleHidden(it.id,'b',it.bullets[+t.dataset.bv].id,t.checked); t.closest('.b-row').classList.toggle('off',!t.checked); sfx.click(); typingPushed=false; }
+    else if (t.dataset.cls!=null){ toggleHidden(it.id,'c',t.dataset.cls,t.checked); t.closest('.cls-chip').classList.toggle('off',!t.checked); sfx.click(); typingPushed=false; }
+    if (t.dataset.f==='detail'){ const cl = editor.querySelector('#clsList'); if (cl) cl.innerHTML = classChips(it); }
   } else if (e.kind==='sec'){
     const sec = secById(e.id);
     if (t.dataset.f==='stitle') sec.title = t.value;
@@ -1085,7 +1140,7 @@ const act = {
     delete state.items[it.id];
     closeEditor(); renderAll(true); sfx.remove();
   },
-  'b-add': ()=>{ pushHistory(); const it=state.items[ui.editing.id]; (it.bullets ||= []).push({t:'',on:true}); buildEditor(); live(); const ts=editor.querySelectorAll('[data-b]'); ts[ts.length-1]?.focus(); sfx.pop(); },
+  'b-add': ()=>{ pushHistory(); const it=state.items[ui.editing.id]; (it.bullets ||= []).push({id:uid(),t:''}); buildEditor(); live(); const ts=editor.querySelectorAll('[data-b]'); ts[ts.length-1]?.focus(); sfx.pop(); },
   'b-del': el=>{ pushHistory(); state.items[ui.editing.id].bullets.splice(+el.dataset.i,1); buildEditor(); live(); sfx.click(); },
   'b-up': el=>moveBullet(+el.dataset.i,-1),
   'b-down': el=>moveBullet(+el.dataset.i,1),
@@ -1101,7 +1156,7 @@ const act = {
   'tab-switch': el=>switchTab(el.dataset.id),
   'tab-new': ()=>{
     syncTab(); pushHistory();
-    const n = state.tabs.length+1, t = {id:uid(), name:'Version '+n, cv:JSON.parse(JSON.stringify(state.cv))};
+    const n = state.tabs.length+1, t = {id:uid(), name:'Version '+n, cv:JSON.parse(JSON.stringify(state.cv)), hidden:JSON.parse(JSON.stringify(activeTab().hidden||{}))};
     state.tabs.push(t); state.activeTab = t.id; state.cv = t.cv;
     renderAll(true); sfx.pop();
     $(`#tabs .tab[data-id="${t.id}"]`)?.classList.add('pop');

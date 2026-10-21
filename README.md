@@ -33,7 +33,7 @@ Not sure which Mac you have? Apple menu → **About This Mac** → look at "Chip
 - **Library (left):** all your content. Drag a single block, or a whole section by its header, onto the page.
 - **Remove:** drag a block back to the library, or hover it and click **×**. It stays in your library.
 - **Reorder:** drag blocks within a section, or drag a section heading to move the whole section.
-- **Edit:** click any block. Untick a bullet to hide it without deleting it (this applies in every version, since blocks are shared). Wrap words in `**double stars**` for bold.
+- **Edit:** click any block. Untick a bullet, or a class in the "Classes" line, to hide it in the current version only; the text stays shared. Wrap words in `**double stars**` for bold.
 - **Auto-fit:** spacing (and, if needed, text size) adjusts so the CV fills exactly one page.
 - **Version tabs:** the tabs above the page are different versions of your CV (e.g. "Embedded roles", "Product"). They all share the same library: edit a block once and every version that uses it updates. Each tab remembers its own layout, which blocks are on the page and in what order, and saves automatically. **+** starts a new version as a copy of the current one; double-click a tab to rename it.
 - **Duplicate:** make a variant of a block to keep two different wordings of the same job.
