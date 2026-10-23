@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, Menu, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -6,6 +6,9 @@ const isMac = process.platform === 'darwin';
 const prefsFile = () => path.join(app.getPath('userData'), 'prefs.json');
 const readPrefs = () => { try { return JSON.parse(fs.readFileSync(prefsFile(), 'utf8')); } catch { return {}; } };
 const writePrefs = p => { try { fs.writeFileSync(prefsFile(), JSON.stringify(p)); } catch {} };
+
+// Keep using the data folder from when the app was called "CV Blocks", so the saved CV carries over.
+app.setPath('userData', path.join(app.getPath('appData'), 'CV Blocks'));
 
 let win;
 
@@ -15,10 +18,10 @@ function createWindow() {
     height: 920,
     minWidth: 1080,
     minHeight: 680,
-    title: 'CV Blocks',
-    backgroundColor: '#ececef',
+    title: 'Blokk',
+    backgroundColor: '#f6f6f8',
     show: false,
-    ...(isMac ? { titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 20, y: 24 } } : { autoHideMenuBar: true }),
+    ...(isMac ? { titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 20, y: 19 } } : { autoHideMenuBar: true }),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -64,7 +67,7 @@ function buildMenu() {
     {
       label: 'File',
       submenu: [
-        { label: 'Export PDF…', accelerator: 'CmdOrCtrl+E', click: () => win && win.webContents.executeJavaScript('exportPDF()') },
+        { label: 'Export PDF…', accelerator: 'CmdOrCtrl+E', click: () => win && !win.isDestroyed() && win.webContents.executeJavaScript('exportPDF()') },
         { type: 'separator' },
         isMac ? { role: 'close' } : { role: 'quit' }
       ]
@@ -79,8 +82,17 @@ function buildMenu() {
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
-  app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
+  // On macOS the app keeps running after its window is closed, so the window may be gone: reopen it instead of touching a destroyed one.
+  app.on('second-instance', () => {
+    if (!win || win.isDestroyed()) { createWindow(); return; }
+    if (win.isMinimized()) win.restore();
+    win.focus();
+  });
   app.whenReady().then(() => {
+    // Privacy: the app never talks to the internet. Only its own local files can load, and no permission
+    // (camera, location, notifications...) is ever granted, so a CV can't leave this computer through the app.
+    session.defaultSession.webRequest.onBeforeRequest((details, cb) => cb({ cancel: !/^(file|data|blob|devtools):/.test(details.url) }));
+    session.defaultSession.setPermissionRequestHandler((_wc, _perm, cb) => cb(false));
     buildMenu();
     createWindow();
     app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

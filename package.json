@@ -1,7 +1,7 @@
 {
-  "name": "cv-blocks",
-  "productName": "CV Blocks",
-  "version": "1.2.1",
+  "name": "blokk",
+  "productName": "Blokk",
+  "version": "2.0.0",
   "description": "Drag-and-drop CV builder: snap blocks in and out, auto-fit to one page, export to PDF.",
   "author": "Ali Mleahat",
   "license": "MIT",
@@ -14,7 +14,7 @@
   },
   "build": {
     "appId": "com.alimleahat.cvblocks",
-    "productName": "CV Blocks",
+    "productName": "Blokk",
     "files": [
       "index.html",
       "main.js",
@@ -23,7 +23,7 @@
     ],
     "directories": {
       "buildResources": "build",
-      "output": "dist"
+      "output": "dist.noindex"
     },
     "mac": {
       "category": "public.app-category.productivity",
@@ -39,8 +39,8 @@
       "identity": null
     },
     "dmg": {
-      "title": "CV Blocks",
-      "artifactName": "CV-Blocks-${version}-mac-${arch}.${ext}"
+      "title": "Blokk",
+      "artifactName": "Blokk-${version}-mac-${arch}.${ext}"
     },
     "win": {
       "target": [
@@ -50,7 +50,8 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "icon": "build/icon-win.png"
     },
     "nsis": {
       "oneClick": false,
@@ -58,8 +59,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "CV Blocks",
-      "artifactName": "CV-Blocks-Setup-${version}.${ext}"
+      "shortcutName": "Blokk",
+      "artifactName": "Blokk-Setup-${version}.${ext}"
     },
     "publish": {
       "provider": "github",

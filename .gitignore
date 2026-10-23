@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist.noindex/
 .DS_Store
 
 # personal CV data never goes in the repo
